@@ -1,0 +1,14 @@
+[Unit]
+Description= start docker container that enables AccessPoint and Wifi client for RaspberryPI
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=on-failure
+ExecStart=/bin/bash ./start_RPi_Docker_Container.sh
+ExecStop=/bin/bash ./stop_RPi_Docker_Container.sh
+WorkingDirectory=/home/pi/dev/RPi_access_point/services
+
+[Install]
+WantedBy=multi-user.target
