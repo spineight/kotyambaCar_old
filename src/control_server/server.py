@@ -36,7 +36,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
       ## move car
       if(yOffset > 0):
         car.moveForwardAsync(speed_dc, steer_dc, active_time)
-      elif(yOffset <0)
+      elif(yOffset <0):
         car.moveBackwardAsync(speed_dc, steer_dc, active_time)
 
     except Exception as e:
