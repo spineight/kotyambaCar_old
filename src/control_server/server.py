@@ -12,19 +12,34 @@ from vehicle import Vehicle
  
 from tornado.options import define, options
 define("port", default=8084, help="run on the given port", type=int)
- 
+
+### handles requests: http://kotyambacar.local:8084/
 class IndexHandler(tornado.web.RequestHandler):
   def get(self):
     self.render('index.html')
- 
+
+###  Docs for WebSocketHandler:
+### https://www.tornadoweb.org/en/stable/websocket.html
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
+  # WebSocketHandler
   def initialize(self, car):
     self.car = car
+  
+  # overridden
+  # Invoked when a new WebSocket is opened.
+  # The arguments to open are extracted from the tornado.web.URLSpec regular expression
   def open(self):
     print 'new connection'
-    # write msg to the client
+    # Sends the given message to the client of this Web Socket.
+    # The message may be either a string or a dict (which will be encoded as json). 
+    # If the binary argument is false, the message will be sent as utf8; 
+    # in binary mode any byte string is allowed.
+    # If the connection is already closed, raises WebSocketClosedError. 
+    # Returns a Future which can be used for flow control.
     self.write_message("connected")
  
+  # overridden
+  # Handle incoming messages on the WebSocket
   def on_message(self, message):
     try:
       print "message received {}".format(message)
@@ -45,11 +60,13 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
   def on_close(self):
     print 'connection closed'
 
+
+## use syntax {"car":car} - to pass argument to the WebSocketHandler initialize method
 def make_app(car):
     return tornado.web.Application(
     handlers=[
-      (r"/", IndexHandler),
-      (r"/websocket", WebSocketHandler, {"car":car}) # maps handler to http://kotyambacar.local:8080/websocket request
+      (r"/", IndexHandler), ## will handle all requests to http://kotyambacar.local:8084/
+      (r"/websocket", WebSocketHandler, {"car":car}) # maps handler to http://kotyambacar.local:8084/websocket request
       ]
   )
  
