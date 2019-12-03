@@ -45,17 +45,43 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
       print "message received {}".format(message)
       # write message to the client
       self.write_message("message received {}".format(message))
-      xOffset, yOffset = message.split()
-      print "xOffset: {0}; yOffset {1}".format(xOffset, yOffset) 
-      
-      ## move car
-      if(yOffset > 0):
-        car.moveForwardAsync(speed_dc, steer_dc, active_time)
-      elif(yOffset <0):
-        car.moveBackwardAsync(speed_dc, steer_dc, active_time)
+      message_list = message.split()
+      msg_type = message_list[0]
+      if(msg_type in "control_command"):
+        xOffset, yOffset, viewWidth, viewHeight, slider_value = message_list[1:]
+        print "xOffset: {0}; yOffset {1}".format(xOffset, yOffset) 
+        assert(viewWidth == viewHeight)
+        circleRadius = viewWidth / 2. # we expect that viewWidth == viewHeight
+
+        steer_dc = xOffset / circleRadius * 100. # 0 <= steer_dc <= 100
+        speed_dc = yOffset / circleRadius * 100. # 0 <= speed_dc <= 100
+        ## move car
+        if(yOffset > 0):
+          car.moveForwardAsync(speed_dc, steer_dc, slider_value)
+        elif(yOffset <0):
+          car.moveBackwardAsync(speed_dc, steer_dc, slider_value)
+      elif(msg_type in "mode_command"):
+        if(message_list[1] in "manual"):
+          self.enable_manual_mode();
+        elif(message_list[1] in "training"):
+          self.enable_training_mode();
+        elif(message_list[1] in "autonomous"):
+          self.enable_autonomous_mode();
+      else:
+        print "ERROR: unnown command type"
 
     except Exception as e:
       print str(e)
+
+  def enable_manual_mode(self):
+    print "enable_manual_mode"
+
+  def enable_training_mode(self):
+    print "enable_training_mode"
+
+  def enable_autonomous_mode(self):
+    print "enable_autonomous_mode"
+
  
   def on_close(self):
     print 'connection closed'

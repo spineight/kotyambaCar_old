@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Text,
   View,
+  Button,
 } from 'react-native'
 
 export default class App extends Component {
@@ -50,6 +51,15 @@ export default class App extends Component {
       { circleCenterX: circleCenterX, circleCenterY: circleCenterY, ViewWidth: ViewWidth, ViewHeight: ViewHeight}
     ))
   }
+  onManualMode() {
+    console.log("onManualMode");
+  }
+  onTrainingMode() {
+    console.log("onTrainingMode");
+  }
+  onAutonomousMode() {
+    console.log("onAutonomousMode");
+  }
 
 
   render() {
@@ -62,6 +72,26 @@ export default class App extends Component {
             onLayout={(event) => this.onLayout(event)}
           >
           </TouchableOpacity>
+        </View>
+        <View style={styles.button_container}>
+          <Button
+          title={'Manual'}
+          backgroundColor={'#FB6567'}
+          onPress={this.onManualMode}
+          style={styles.button}
+          />
+          <Button
+          title={'Training'}
+          backgroundColor={'#FB6567'}
+          onPress={this.onTrainingMode}
+          style={styles.button}
+          />
+          <Button
+          title={'Autonomous'}
+          backgroundColor={'#FB6567'}
+          onPress={this.onAutonomousMode}
+          style={styles.button}
+          />
         </View>
         <View style = {styles.slider}>
           <Slider
@@ -115,5 +145,15 @@ const styles = StyleSheet.create({
     width: 350,
     justifyContent: "center",
     // backgroundColor: '#ecf0f1'
+  },
+  button_container: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  button: {
+    backgroundColor: 'green',
+    width: '40%',
+    height: 40
   },
 })
