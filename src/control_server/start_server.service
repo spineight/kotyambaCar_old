@@ -2,7 +2,8 @@
 Description= start TornadoWebServer
 
 [Service]
-Type=oneshot
+TimeoutStartSec=0
+Restart=on-failure
 ExecStart=/bin/bash ./start_server.sh
 WorkingDirectory=/home/pi/kotyambaCar/src/control_server
 
