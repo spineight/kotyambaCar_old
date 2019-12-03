@@ -11,7 +11,7 @@ from motor_pwm import Motor
 from vehicle import Vehicle
  
 from tornado.options import define, options
-define("port", default=8084, help="run on the given port", type=int)
+define("port", default=8085, help="run on the given port", type=int)
 
 ### handles requests: http://kotyambacar.local:8084/
 class IndexHandler(tornado.web.RequestHandler):
