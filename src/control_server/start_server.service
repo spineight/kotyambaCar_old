@@ -1,0 +1,10 @@
+[Unit]
+Description= start TornadoWebServer
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash ./start_server.sh
+WorkingDirectory=${kotyambaCar_path}/src/control_server
+
+[Install]
+WantedBy=multi-user.target
