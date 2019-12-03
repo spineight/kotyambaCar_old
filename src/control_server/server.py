@@ -50,7 +50,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
       message_list = message.split()
       msg_type = message_list[0]
       if(msg_type in "control_command"):
-        xOffset, yOffset, viewWidth, viewHeight, slider_value = message_list[1:]
+        xOffset, yOffset, viewWidth, viewHeight, slider_value = map(float, message_list[1:])
         print "xOffset: {0}; yOffset {1}".format(xOffset, yOffset) 
         assert(viewWidth == viewHeight)
         circleRadius = viewWidth / 2. # we expect that viewWidth == viewHeight
@@ -69,21 +69,29 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
           self.enable_training_mode();
         elif(message_list[1] in "autonomous"):
           self.enable_autonomous_mode();
-      else:
-        print "ERROR: unnown command type"
+      elif (msg_type in "status_info"):
+        print message_list[1]
+      else: print "ERROR: unnown command type"
 
     except Exception as e:
       print str(e)
 
   def enable_manual_mode(self):
-    os.system("sudo motion -c motion.conf")
+    print "starting Motion module, streaming on port 8081"
+    os.system("sudo killall motion")
+    path_to_config_file = './motion.conf'
+    os.system("sudo motion -m  -c {}".format(path_to_config_file))
     print "enable_manual_mode"
 
   def enable_training_mode(self):
+    print "stopping Motion module"
     print "enable_training_mode"
+    os.system("sudo killall motion")
 
   def enable_autonomous_mode(self):
     print "enable_autonomous_mode"
+    print "stopping Motion module"
+    os.system("sudo killall motion")
 
  
   def on_close(self):
