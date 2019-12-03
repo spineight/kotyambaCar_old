@@ -1,11 +1,11 @@
 [Unit]
 Description= start TornadoWebServer
+After=network-online.target
 
 [Service]
-TimeoutStartSec=0
-Restart=on-failure
-ExecStart=/bin/bash ./start_server.sh
+ExecStart=/usr/bin/python server.py
 WorkingDirectory=/home/pi/kotyambaCar/src/control_server
+User=pi
 
 [Install]
 WantedBy=multi-user.target
