@@ -76,7 +76,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
       print str(e)
 
   def enable_manual_mode(self):
-    os.system("")
+    os.system("sudo motion -c motion.conf")
     print "enable_manual_mode"
 
   def enable_training_mode(self):

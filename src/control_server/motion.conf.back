@@ -8,7 +8,7 @@
 ############################################################
 
 # Start in daemon (background) mode and release terminal (default: off)
-daemon on
+daemon off
 
 # File to store the process ID, also called pid file. (default: not defined)
 process_id_file /var/run/motion/motion.pid
@@ -83,7 +83,7 @@ height 240
 
 # Maximum number of frames to be captured per second.
 # Valid range: 2-100. Default: 100 (almost no limit).
-framerate 30
+framerate 2
 
 # Minimum time in seconds between capturing picture frames from the camera.
 # Default: 0 = disabled - the capture rate is given by the camera framerate.
@@ -458,7 +458,7 @@ stream_motion off
 stream_maxrate 1
 
 # Restrict stream connections to localhost only (default: on)
-stream_localhost off
+stream_localhost on
 
 # Limits the number of images per connection (default: 0 = unlimited)
 # Number can be defined by multiplying actual stream rate by desired number of seconds
@@ -492,10 +492,10 @@ stream_auth_method 0
 webcontrol_port 8080
 
 # Restrict control connections to localhost only (default: on)
-webcontrol_localhost off
+webcontrol_localhost on
 
 # Output for http server, select off to choose raw text plain (default: on)
-webcontrol_html_output off
+webcontrol_html_output on
 
 # Authentication for the http based control. Syntax username:password
 # Default: not defined (Disabled)
