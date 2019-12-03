@@ -1,12 +1,17 @@
 echo "Preparing kotyambaCar"
 
-export kotyambaCar_path="$(pwd)"
-echo "Settting kotyambaCar_path to $kotyambaCar_path"
+# TODO consider using virtualenv, but how to reboot for changes to take effect
+echo "1. Install all required packages"
 
-echo "preparing environment"
-sudo apt install python-pip
-pip --version
-pip install virtualenv
+#echo "preparing environment"
+sudo apt-get update -y
+sudo apt install python-pip -y
+python -m pip install tornado
+python -m pip install RPi.GPIO
+sudo apt-get install motion -y
+
+#pip --version
+#pip install virtualenv
 #echo 'PATH="$PATH:$HOME/.local/bin"' >> ~/.bashrc
 #. ~/.bashrc
 #virtualenv env
