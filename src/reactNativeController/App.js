@@ -16,7 +16,7 @@ export default class App extends Component {
       is_socket_open: false,
       slider_value: 1,
     };
-    this.socket = new WebSocket('ws://kotyambacar.local:8084/websocket');
+    this.socket = new WebSocket('ws://raspberrypi.local:8085/websocket');
     this.socket.onopen = () => {
       // connection opened
       this.socket.send('connection established'); // send a message
@@ -31,10 +31,11 @@ export default class App extends Component {
     let xOffset = event.nativeEvent.locationX - this.state.circleCenterX;
     // use "-" to reverse Y axis
     let yOffset = -(event.nativeEvent.locationY - this.state.circleCenterY);
-    console.log(`xOffset ${xOffset}, yOffset ${yOffset} slider_value${this.state.slider_value}  ViewWidth ${this.state.ViewWidth} ViewHeight ${this.state.ViewHeight}`);
+    msg_to_send = `control_command ${xOffset} ${yOffset} ${this.state.ViewWidth} ${this.state.ViewHeight} ${this.state.slider_value}`
+    console.log(msg_to_send);
     console.log(event.nativeEvent)
     if(this.state.is_socket_open)
-      this.socket.send(`${xOffset} ${yOffset} ${this.state.ViewWidth} ${this.state.ViewHeight} ${this.state.slider_value}`);
+      this.socket.send(msg_to_send);
   }
 
   onLayout(event) {
@@ -51,14 +52,20 @@ export default class App extends Component {
       { circleCenterX: circleCenterX, circleCenterY: circleCenterY, ViewWidth: ViewWidth, ViewHeight: ViewHeight}
     ))
   }
-  onManualMode() {
+  onManualMode(event) {
     console.log("onManualMode");
+    if(this.state.is_socket_open)
+      this.socket.send("mode_command manual");
   }
-  onTrainingMode() {
+  onTrainingMode(event) {
     console.log("onTrainingMode");
+    if(this.state.is_socket_open)
+      this.socket.send("mode_command training");
   }
-  onAutonomousMode() {
+  onAutonomousMode(event) {
     console.log("onAutonomousMode");
+    if(this.state.is_socket_open)
+      this.socket.send("mode_command autonomous");
   }
 
 
@@ -77,19 +84,19 @@ export default class App extends Component {
           <Button
           title={'Manual'}
           backgroundColor={'#FB6567'}
-          onPress={this.onManualMode}
+          onPress={(event) => this.onManualMode(event)}
           style={styles.button}
           />
           <Button
           title={'Training'}
           backgroundColor={'#FB6567'}
-          onPress={this.onTrainingMode}
+          onPress={(event) => this.onTrainingMode(event)}
           style={styles.button}
           />
           <Button
           title={'Autonomous'}
           backgroundColor={'#FB6567'}
-          onPress={this.onAutonomousMode}
+          onPress={(event) => this.onAutonomousMode(event)}
           style={styles.button}
           />
         </View>
