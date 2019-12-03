@@ -1,3 +1,5 @@
+import os # os.system("cmd")
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
@@ -74,6 +76,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
       print str(e)
 
   def enable_manual_mode(self):
+    os.system("")
     print "enable_manual_mode"
 
   def enable_training_mode(self):
