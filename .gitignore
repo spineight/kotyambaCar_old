@@ -111,3 +111,8 @@ venv.bak/
 # we only need App.js, all other files will be downloaded/generated
 src/reactNativeController
 !src/reactNativeController/App.js
+
+# ROS
+src/catkin-ws/build
+src/catkin-ws/devel
+src/catkin-ws/.catkin_workspace
