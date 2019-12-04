@@ -5,9 +5,9 @@ from kotyambaCar.msg import movement_command
 def command_center():
     pub = rospy.Publisher('command_center_commands', movement_command)
     rospy.init_node('command_center', anonymous=True)
-    r = rospy.Rate(10) #10hz
+    r = rospy.Rate(0.5) #10hz
     msg = movement_command()
-    msg.speed_dc = 90
+    msg.speed_dc = 80
     msg.steer_dc = 90
     msg.active_time_sec = 1
 

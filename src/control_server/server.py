@@ -92,6 +92,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     print "enable_autonomous_mode"
     print "stopping Motion module"
     os.system("sudo killall motion")
+    os.system("source ../scripts/setup_slave_node.sh")
+    os.system("rosrun kotyambaCar command_listener.py")
 
  
   def on_close(self):
