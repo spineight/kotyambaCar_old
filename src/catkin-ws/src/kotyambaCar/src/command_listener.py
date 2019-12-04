@@ -4,11 +4,16 @@ import rospy
 from kotyambaCar.msg import movement_command 
 
 def callback(data):
-    rospy.loginfo("movement_command: speed_dc: {}, steer_dc: {}, active_time_sec: {}".format(speed_dc, steer_dc, active_time_sec))
+    print "got data"
+def callback(data):
+    msg = "movement_command: speed_dc: {}, steer_dc: {}, active_time_sec: {}".format(data.speed_dc, data.steer_dc, data.active_time_sec)
+    rospy.loginfo(msg)
+    print msg
 
 def listener():
+    print "starting command_listener node"
     rospy.init_node("command_listener",anonymous=True)
-    rospy.Subscriber("command_center", movement_command, movement_command)
+    rospy.Subscriber("command_center", movement_command, callback)
     
     rospy.spin()
 
