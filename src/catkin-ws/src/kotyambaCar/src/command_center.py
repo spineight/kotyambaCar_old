@@ -3,7 +3,7 @@ import rospy
 from kotyambaCar.msg import movement_command 
 
 def command_center():
-    pub = rospy.Publisher('command_center', movement_command)
+    pub = rospy.Publisher('command_center_commands', movement_command)
     rospy.init_node('command_center', anonymous=True)
     r = rospy.Rate(10) #10hz
     msg = movement_command()
