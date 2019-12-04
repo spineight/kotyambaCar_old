@@ -20,14 +20,14 @@ class Command_listener:
     
         rospy.spin()
 
-    def on_movement_command(data):
+    def on_movement_command(self,data):
         msg = "movement_command: speed_dc: {}, steer_dc: {}, active_time_sec: {}".format(data.speed_dc, data.steer_dc, data.active_time_sec)
         rospy.loginfo(msg)
         print msg
         if(data.speed_dc > 0):
-            self.car.moveForwardAsync(speed_dc, steer_dc, data.active_time_sec)
+            self.car.moveForwardAsync(data.speed_dc, data.steer_dc, data.active_time_sec)
         elif(data.speed_dc <0):
-            self.car.moveBackwardAsync(speed_dc, steer_dc, data.active_time_sec)
+            self.car.moveBackwardAsync(data.speed_dc, data.steer_dc, data.active_time_sec)
 
 if __name__ == '__main__':
     listener = Command_listener()
