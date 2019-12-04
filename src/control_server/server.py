@@ -1,4 +1,5 @@
 import os # os.system("cmd")
+import subprocess 
 
 import tornado.httpserver
 import tornado.ioloop
@@ -58,10 +59,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         steer_dc = xOffset / circleRadius * 100. # 0 <= steer_dc <= 100
         speed_dc = yOffset / circleRadius * 100. # 0 <= speed_dc <= 100
         ## move car
-        if(yOffset > 0):
+        if(speed_dc > 0):
           car.moveForwardAsync(speed_dc, steer_dc, slider_value)
-        elif(yOffset <0):
-          car.moveBackwardAsync(speed_dc, steer_dc, slider_value)
+        elif(speed_dc <0):
+          car.moveBackwardAsync(abs(speed_dc), steer_dc, slider_value)
       elif(msg_type in "mode_command"):
         if(message_list[1] in "manual"):
           self.enable_manual_mode();
@@ -77,10 +78,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
       print str(e)
 
   def enable_manual_mode(self):
+    print "manual mode"
     print "starting Motion module, streaming on port 8081"
     os.system("sudo killall motion")
     path_to_config_file = './motion.conf'
     os.system("sudo motion -m  -c {}".format(path_to_config_file))
+    os.system("rosnode kill command_listener.py")
     print "enable_manual_mode"
 
   def enable_training_mode(self):
@@ -92,8 +95,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     print "enable_autonomous_mode"
     print "stopping Motion module"
     os.system("sudo killall motion")
-    os.system("source ../scripts/setup_slave_node.sh")
-    os.system("rosrun kotyambaCar command_listener.py")
+    # print subprocess.check_output(['source', '../catkin-ws/src/kotyambaCar/scripts/setup_slave_node.sh'])
+    print subprocess.check_output(['rosrun','kotyambaCar', 'command_listener.py'])
 
  
   def on_close(self):

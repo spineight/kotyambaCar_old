@@ -15,7 +15,7 @@ class Command_listener:
         SteerControlMotor = Motor(9,10,11)
         self.car = Vehicle(SpeedControlMotor, SteerControlMotor)
         print "starting command_listener node"
-        rospy.init_node("command_listener",anonymous=True)
+        rospy.init_node("command_listener") # removed ,anonymous=True to be able to kill it by name
         rospy.Subscriber("command_center_commands", movement_command, self.on_movement_command)
     
         rospy.spin()
