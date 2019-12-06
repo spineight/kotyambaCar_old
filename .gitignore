@@ -115,4 +115,5 @@ src/reactNativeController
 # ROS
 src/catkin-ws/build
 src/catkin-ws/devel
+src/catkin-ws/install/
 src/catkin-ws/.catkin_workspace

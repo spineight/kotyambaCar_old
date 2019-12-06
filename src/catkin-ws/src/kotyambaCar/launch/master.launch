@@ -1,4 +1,4 @@
 <launch>
   <machine name="master" address="commandCenter.local" env-loader="$(find kotyambaCar)/../../devel/env.sh" />
-  <node pkg="kotyambaCar" type="command_center" name="command_center" machine="master"/>
+  <node pkg="kotyambaCar" type="command_center.py" name="command_center" machine="master"/>
 </launch>

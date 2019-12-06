@@ -6,3 +6,7 @@ export ROS_MASTER_URI="http://$ROS_MASTER_IP:11311"
 echo "ROS_MASTER_URI $ROS_MASTER_URI"
 export ROS_IP="$ROS_MASTER_IP"
 echo "ROS_IP $ROS_IP"
+
+export KOTYAMBA_PATH=~/dev/kotyambaCar/
+
+export ROSLAUNCH_SSH_UNKNOWN=1
