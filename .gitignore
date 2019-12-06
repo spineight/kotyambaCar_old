@@ -116,7 +116,4 @@ src/reactNativeController
 src/catkin-ws/build
 src/catkin-ws/devel
 src/catkin-ws/install/
-!src/catkin-ws/install/
-src/catkin-ws/install/*
-!src/catkin-ws/install/env.sh
 src/catkin-ws/.catkin_workspace

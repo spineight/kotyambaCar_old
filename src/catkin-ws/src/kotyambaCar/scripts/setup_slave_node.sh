@@ -7,3 +7,5 @@ export ROS_IP="$(getent ahosts raspberrypi.local | awk 'NR==1{ print $1 }')"
 echo "ROS_IP $ROS_IP"
 
 export KOTYAMBA_PATH=~/dev/kotyambaCar/
+
+exec "$@"
