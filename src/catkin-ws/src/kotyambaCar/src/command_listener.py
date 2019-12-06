@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 # https://stackoverflow.com/questions/1054271/how-to-import-a-python-class-that-is-in-a-directory-above
+import os
 import sys
 sys.path.append("$(KOTYAMBA_PATH)/src/control_motors") # Adds higher directory to python modules path.
 from motor_pwm import Motor
