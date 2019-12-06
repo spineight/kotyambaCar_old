@@ -1,7 +1,7 @@
 <launch>
 <machine name="slave" address="raspberrypi.local" 
 user="pi" password="321" 
-env-loader="/home/oleg/dev/kotyambaCar/src/catkin-ws/src/kotyambaCar/scripts/setup_slave_node.sh" >
+env-loader="$(find kotyambaCar)/scripts/setup_slave_node.sh" >
 </machine>
 <node pkg="kotyambaCar" type="command_listener.py" name="command_listener" machine="slave"/>
 <node pkg="kotyambaCar" type="ultrasonic_sensor.py" name="ultrasonic_sensor" machine="slave" >

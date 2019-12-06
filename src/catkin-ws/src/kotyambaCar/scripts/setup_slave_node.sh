@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+source /home/pi/ros_catkin_ws/install_isolated/setup.bash
+source /home/pi/kotyambaCar/src/catkin-ws/install/setup.bash
 export ROS_MASTER_IP="$(getent ahosts commandCenter.local | awk 'NR==1{ print $1 }')"
 echo "ROS_MASTER_IP: $ROS_MASTER_IP"
 export ROS_MASTER_URI="http://$ROS_MASTER_IP:11311"
