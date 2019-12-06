@@ -2,7 +2,6 @@
 <machine name="slave" address="raspberrypi.local" 
 user="pi" password="321" 
 env-loader="/home/pi/kotyambaCar/src/catkin-ws/install/env.sh" >
-<env name="ROS_HOSTNAME" value="raspberrypi.local" />
 </machine>
 <node pkg="kotyambaCar" type="command_listener.py" name="command_listener" machine="slave"/>
 <node pkg="kotyambaCar" type="ultrasonic_sensor.py" name="ultrasonic_sensor" machine="slave" >
