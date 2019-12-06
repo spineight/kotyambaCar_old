@@ -1,0 +1,7 @@
+<launch>
+<machine name="slave" address="raspberrypi.local" user="pi" password="321" env-loader="$(find kotyambaCar)/../../devel/env.sh" />
+<node pkg="kotyambaCar" type="command_listener.py" name="command_listener" />
+<node pkg="kotyambaCar" type="ultrasonic_sensor.py" name="ultrasonic_sensor" >
+  <param name="frequency" value="10.0" />
+</node>
+</launch>
