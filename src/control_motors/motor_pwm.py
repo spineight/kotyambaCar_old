@@ -7,7 +7,7 @@ class Motor:
       use the ChangeDutyCycle() method instead to set the duty cycle to zero to stop PWM 
       https://raspberrypi.stackexchange.com/questions/68386/pwm-stop-respond-after-hundreds-of-start-stop
   '''
-  def __init__(self, directionPinFirst_GPIO_id, directionPinSecond_GPIO_id, speedPin_GPIO_id):
+  def __init__(self, directionPinFirst_GPIO_id, directionPinSecond_GPIO_id, speedPin_GPIO_id, pwm_frequency):
     ''' if signal on pins:  
         directionPinFirst_GPIO_id - TRUE, directionPinSecond_GPIO_id - FALSE - motor rotates in one direction
         directionPinFirst_GPIO_id - FALSE, directionPinSecond_GPIO_id - TRUE - rotates in oposite direction
@@ -27,8 +27,7 @@ class Motor:
     self.first_gpio_id = directionPinFirst_GPIO_id
     self.second_gpio_id = directionPinSecond_GPIO_id
 
-    recommendedFreq = 100
-    self.speedPWM = GPIO.PWM(speedPin_GPIO_id, recommendedFreq)
+    self.speedPWM = GPIO.PWM(speedPin_GPIO_id, pwm_frequency)
     self.speedPWM.start(0)
 
   def __del__(self):
