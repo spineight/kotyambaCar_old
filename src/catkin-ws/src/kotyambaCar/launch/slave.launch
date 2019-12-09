@@ -5,6 +5,6 @@ env-loader="/home/pi/kotyambaCar/src/catkin-ws/src/kotyambaCar/scripts/setup_sla
 </machine>
 <node pkg="kotyambaCar" type="command_listener.py" name="command_listener" machine="slave"/>
 <node pkg="kotyambaCar" type="ultrasonic_sensor.py" name="ultrasonic_sensor" machine="slave" >
-  <param name="frequency" value="10.0" />
+  <param name="~frequency" value="10.0" />
 </node>
 </launch>
