@@ -28,7 +28,7 @@ sudo systemctl status ssh
 sudo ufw allow ssh
 
 echo "##### 3. Using system service to start scripts that setup ROS network vars"
-sudo cp /home/oleg/dev/kotyambaCar/src/catkin-ws/src/kotyambaCar/scripts/setup_command_center_ros_network.service.service /etc/systemd/system
+sudo cp /home/oleg/dev/kotyambaCar/src/catkin-ws/src/kotyambaCar/scripts/setup_command_center_ros_network.service /etc/systemd/system
 sudo systemctl daemon-reload
 # make service running on system boot:  
 sudo systemctl enable setup_command_center_ros_network.service --now
