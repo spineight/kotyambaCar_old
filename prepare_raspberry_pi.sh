@@ -37,4 +37,4 @@ echo "setting KOTYAMBA_REPO_RASPBERRY to $KOTYAMBA_REPO_RASPBERRY"
 read -p "Enter fullpath to kotyambaCar repo on command_center machine: " fullpath
 export KOTYAMBA_REPO_COMMAND_CENTER="$fullpath"
 echo "KOTYAMBA_REPO_COMMAND_CENTER was set to: $KOTYAMBA_REPO_COMMAND_CENTER"
-echo "check it!"
+echo "check it!: echo $KOTYAMBA_REPO_COMMAND_CENTER"

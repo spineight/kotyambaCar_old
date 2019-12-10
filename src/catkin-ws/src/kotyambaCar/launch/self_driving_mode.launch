@@ -4,7 +4,7 @@
 
   <machine name="slave" address="raspberrypi.local" 
     user="pi" password="321" 
-    env-loader="$(env KOTYAMBA_REPO_RASPBERRY)/src/catkin-ws/src/kotyambaCar/scripts/setup_slave_node.sh" >
+    env-loader="$(env KOTYAMBA_REPO_RASPBERRY)/src/catkin-ws/src/kotyambaCar/scripts/setup_raspberry_pi_nodes.sh" >
   </machine>
 
   <node pkg="kotyambaCar" type="command_listener.py" name="command_listener" machine="slave"/>
@@ -12,6 +12,9 @@
     <param name="~frequency" value="10.0" />
   </node>
 
-  <machine name="master" address="commandCenter.local" env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/src/catkin-ws/src/kotyambaCar/scripts/setup_master_node.sh" />
+  <machine name="master" address="commandCenter.local" 
+    user="oleg" password="321" 
+    env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/src/catkin-ws/src/kotyambaCar/scripts/setup_command_center_nodes.sh">
+  </machine>
   <node pkg="kotyambaCar" type="command_center.py" name="command_center" machine="master"/>
 </launch>

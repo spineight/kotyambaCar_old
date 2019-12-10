@@ -12,4 +12,4 @@ read -p "Enter fullpath to kotyambaCar repo on RaspberryPI: " fullpath
 
 export KOTYAMBA_REPO_RASPBERRY="$fullpath"
 echo "KOTYAMBA_REPO_RASPBERRY was set to: $KOTYAMBA_REPO_RASPBERRY"
-echo "check it!"
+echo "check it! echo $KOTYAMBA_REPO_RASPBERRY"

@@ -13,8 +13,9 @@ from kotyambaCar.msg import movement_command
     
 class Command_listener:
     def __init__(self):
-        SpeedControlMotor = Motor(7,8,1)
-        SteerControlMotor = Motor(9,10,11)
+        pwm_frequency = 200
+        SpeedControlMotor = Motor(7,8,1, pwm_frequency)
+        SteerControlMotor = Motor(9,10,11, pwm_frequency)
         self.car = Vehicle(SpeedControlMotor, SteerControlMotor)
         print "starting command_listener node"
         rospy.init_node("command_listener") # removed ,anonymous=True to be able to kill it by name
@@ -33,6 +34,3 @@ class Command_listener:
 
 if __name__ == '__main__':
     listener = Command_listener()
-
-# /Users/mac/remotePiMount/src/catkin-ws/src/kotyambaCar/src/command_listener.py
-# /Users/mac/remotePiMount/src/control_motors
