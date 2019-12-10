@@ -31,5 +31,10 @@ sudo systemctl enable start_tornado_webserver.service --now
 systemctl status start_tornado_webserver.service
 
 echo "#### 3. Setting up environment variables ####"
-export KOTYAMBA_REPO_FOLDER="$(pwd)"
-echo "setting KOTYAMBA_REPO_FOLDER to $KOTYAMBA_REPO_FOLDER"
+export KOTYAMBA_REPO_RASPBERRY="$(pwd)"
+echo "setting KOTYAMBA_REPO_RASPBERRY to $KOTYAMBA_REPO_RASPBERRY"
+
+read -p "Enter fullpath to kotyambaCar repo on command_center machine: " fullpath
+export KOTYAMBA_REPO_COMMAND_CENTER="$fullpath"
+echo "KOTYAMBA_REPO_COMMAND_CENTER was set to: $KOTYAMBA_REPO_COMMAND_CENTER"
+echo "check it!"

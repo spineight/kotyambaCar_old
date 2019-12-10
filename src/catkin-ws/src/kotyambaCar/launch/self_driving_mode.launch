@@ -1,0 +1,17 @@
+<launch>
+  <!-- <include file="$(find kotyambaCar)/launch/master.launch" />
+  <include file="$(find kotyambaCar)/launch/slave.launch" /> -->
+
+  <machine name="slave" address="raspberrypi.local" 
+    user="pi" password="321" 
+    env-loader="$(env KOTYAMBA_REPO_RASPBERRY)/src/catkin-ws/src/kotyambaCar/scripts/setup_slave_node.sh" >
+  </machine>
+
+  <node pkg="kotyambaCar" type="command_listener.py" name="command_listener" machine="slave"/>
+  <node pkg="kotyambaCar" type="ultrasonic_sensor.py" name="ultrasonic_sensor" machine="slave" >
+    <param name="~frequency" value="10.0" />
+  </node>
+
+  <machine name="master" address="commandCenter.local" env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/src/catkin-ws/src/kotyambaCar/scripts/setup_master_node.sh" />
+  <node pkg="kotyambaCar" type="command_center.py" name="command_center" machine="master"/>
+</launch>
