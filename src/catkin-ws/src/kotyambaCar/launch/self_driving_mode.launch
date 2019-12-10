@@ -1,6 +1,7 @@
 <launch>
   <!-- <include file="$(find kotyambaCar)/launch/master.launch" />
   <include file="$(find kotyambaCar)/launch/slave.launch" /> -->
+  <arg name="self_driving_mode" default="$(env ROS_MASTER_IP)" />
 
   <machine name="slave" address="raspberrypi.local" 
     user="pi" password="321" 
