@@ -107,8 +107,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 def make_app(car):
     return tornado.web.Application(
     handlers=[
-      (r"/", IndexHandler), ## will handle all requests to http://kotyambacar.local:8084/
-      (r"/websocket", WebSocketHandler, {"car":car}) # maps handler to http://kotyambacar.local:8084/websocket request
+      (r"/", IndexHandler), ## will handle all requests to http://kotyambacar.local:8085/
+      (r"/websocket", WebSocketHandler, {"car":car}) # maps handler to http://kotyambacar.local:8085/websocket request
       ]
   )
  
@@ -123,6 +123,13 @@ if __name__ == "__main__":
 
   
   httpServer = tornado.httpserver.HTTPServer(app)
-  httpServer.listen(options.port)
-  print "Listening on port:", options.port
+  try:
+    httpServer.listen(options.port)
+    print "Listening on port:", options.port
+  except Exception as e:
+    print e
+    print "Unblocking port"
+    os.system("sudo lsof -t -i tcp:{0} | xargs kill -9".format(options.port))
+    httpServer.listen(options.port)
+    print "Listening on port:", options.port
   tornado.ioloop.IOLoop.instance().start()
