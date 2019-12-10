@@ -59,18 +59,18 @@ class Vehicle:
     try:
       self.speed_control_motor.rotate(speed_dc,True)
       if(steer_dc >= 0):
-        # right
-        self.steering_control_motor.rotate(steer_dc,False)
+        self.steering_control_motor.rotate(steer_dc,False) # right
       else:
-        # left
-        self.steering_control_motor.rotate(abs(steer_dc),True)
+        self.steering_control_motor.rotate(abs(steer_dc),True) # left
 
-      #sleep(active_time_sec)
       self.cv.acquire()
       self.cv.wait(active_time_sec)
-    
-      self.speed_control_motor.stop()
-      self.steering_control_motor.stop()
+
+      # if thread was interrupted don't stop the motor
+      # for smooth commands chaining
+      if(threading.current_thread().getName() == self.last_thread_name):
+        self.speed_control_motor.stop()
+        self.steering_control_motor.stop()
       self.cv.release() 
     except Exception as e:
       print "Forward"
@@ -84,18 +84,18 @@ class Vehicle:
     try:
       self.speed_control_motor.rotate(speed_dc,False)
       if(steer_dc >= 0):
-        # right
-        self.steering_control_motor.rotate(steer_dc,False)
+        self.steering_control_motor.rotate(steer_dc,False) # right
       else:
-        # left
-        self.steering_control_motor.rotate(abs(steer_dc),True)
+        self.steering_control_motor.rotate(abs(steer_dc),True) # left
 
-      #sleep(active_time_sec)
       self.cv.acquire()
       self.cv.wait(active_time_sec)
 
-      self.speed_control_motor.stop()
-      self.steering_control_motor.stop()
+      # if thread was interrupted don't stop the motor
+      # for smooth commands chaining
+      if(threading.current_thread().getName() == self.last_thread_name):
+        self.speed_control_motor.stop()
+        self.steering_control_motor.stop()
       self.cv.release()
     except Exception as e:
       print "Backward"
@@ -113,6 +113,8 @@ class Vehicle:
     self.stopAnotherCommands()
     cmdThread = threading.Thread(target=self.moveForwardPrecise, args=(float(speed_dc), float(steer_dc), float(active_time_sec)))
     cmdThread.daemon = True
+    self.last_thread_name = cmdThread.getName()
+    
     cmdThread.start()
     
  
@@ -120,4 +122,5 @@ class Vehicle:
     self.stopAnotherCommands()
     cmdThread = threading.Thread(target=self.moveBackwardPrecise, args=(speed_dc, steer_dc, active_time_sec))
     cmdThread.daemon = True
+    self.last_thread_name = cmdThread.getName()
     cmdThread.start()
