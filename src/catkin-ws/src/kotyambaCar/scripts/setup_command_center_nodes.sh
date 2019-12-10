@@ -6,5 +6,3 @@ echo "ROS_IP $ROS_IP"
 
 echo "Allow ssh to RaspberryPI"
 export ROSLAUNCH_SSH_UNKNOWN=1
-
-exec "$@"
