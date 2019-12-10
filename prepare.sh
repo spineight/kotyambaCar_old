@@ -1,7 +1,11 @@
+#!/bin/bash
+
+echo "Important! This script should be sourced: source ./prepare.sh"
+echo "Otherwise no environment variables will be set"
 echo "Preparing kotyambaCar"
 
 # TODO consider using virtualenv, but how to reboot for changes to take effect
-echo "1. Install all required packages"
+echo "#### 1. Install all required packages ####"
 
 #echo "preparing environment"
 sudo apt-get update -y
@@ -17,11 +21,15 @@ sudo apt-get install motion -y
 #virtualenv env
 #. /env/bin/activate
 
-echo "Using systemd to setup starting of Tornado web server on boot"
-sudo cp src/control_server/start_server.service /etc/systemd/system
+echo "#### 2. Using systemd to setup starting of Tornado web server on boot ####"
+sudo cp src/control_server/start_tornado_webserver.service /etc/systemd/system
 sudo systemctl daemon-reload
 # make service running on system boot:  
-sudo systemctl enable start_server.service --now
+sudo systemctl enable start_tornado_webserver.service --now
 
 # check service status:  
-systemctl status start_server.service
+systemctl status start_tornado_webserver.service
+
+echo "#### 3. Setting up environment variables ####"
+export KOTYAMBA_REPO_FOLDER="$(pwd)"
+echo "setting KOTYAMBA_REPO_FOLDER to $KOTYAMBA_REPO_FOLDER"
