@@ -26,3 +26,9 @@ sudo systemctl status ssh
 # Ubuntu comes with a firewall configuration tool called UFW. 
 # If the firewall is enabled on your system, make sure to open the SSH port:
 sudo ufw allow ssh
+
+echo "##### 3. Using system service to start scripts that setup ROS network vars"
+sudo cp /home/oleg/dev/kotyambaCar/src/catkin-ws/src/kotyambaCar/scripts/setup_command_center_ros_network.service.service /etc/systemd/system
+sudo systemctl daemon-reload
+# make service running on system boot:  
+sudo systemctl enable setup_command_center_ros_network.service --now

@@ -1,0 +1,11 @@
+[Unit]
+Description= setup ROS env variables for networking
+After=network-online.target
+
+[Service]
+ExecStart=/bin/bash ./setup_raspberry_pi_nodes.sh
+
+User=pi
+
+[Install]
+WantedBy=multi-user.target
