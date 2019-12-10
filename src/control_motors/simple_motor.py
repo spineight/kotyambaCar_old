@@ -37,7 +37,7 @@ try :
   ## On one shoulde be 1 on another 0
   GPIO.output(MotorA_direction_pin0, GPIO.HIGH)
   GPIO.output(MotorA_direction_pin1, GPIO.LOW)
-  recommendedFreq = 200
+  recommendedFreq = 400
   DC = 90
   action_time_sec = 5
   speedPWM = GPIO.PWM(MotorA_EnA_pin, recommendedFreq)
@@ -51,7 +51,7 @@ try :
   print "Turning motor B. Steering control"
   GPIO.output(MotorB_steering_pin0, GPIO.HIGH)
   GPIO.output(MotorB_steering_pin1, GPIO.LOW)
-  recommendedFreq = 200
+  recommendedFreq = 400
   DC = 80
   action_time_sec = 5
   directionPWM = GPIO.PWM(MotorB_EnB_pin, recommendedFreq)

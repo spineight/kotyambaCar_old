@@ -59,9 +59,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         steer_dc = xOffset / circleRadius * 100. # 0 <= steer_dc <= 100
         speed_dc = yOffset / circleRadius * 100. # 0 <= speed_dc <= 100
         ## move car
+        print "setting steer_dc:{} speed_dc:{}".format(steer_dc,speed_dc)
         if(speed_dc > 0):
+          speed_dc = 100
           car.moveForwardAsync(speed_dc, steer_dc, slider_value)
         elif(speed_dc <0):
+          speed_dc = 100
           car.moveBackwardAsync(abs(speed_dc), steer_dc, slider_value)
       elif(msg_type in "mode_command"):
         if(message_list[1] in "manual"):
@@ -115,8 +118,8 @@ def make_app(car):
 if __name__ == "__main__":
   tornado.options.parse_command_line()
 
-  SpeedControlMotor = Motor(7,8,1,200)
-  SteerControlMotor = Motor(9,10,11,200)
+  SpeedControlMotor = Motor(7,8,1,100)
+  SteerControlMotor = Motor(9,10,11,100)
   car = Vehicle(SpeedControlMotor, SteerControlMotor)
 
   app = make_app(car)
