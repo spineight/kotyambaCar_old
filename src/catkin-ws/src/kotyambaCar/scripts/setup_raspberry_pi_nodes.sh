@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-source /home/pi/ros_catkin_ws/install_isolated/setup.bash
-source /home/pi/kotyambaCar/src/catkin-ws/devel/setup.bash
+# source /home/pi/ros_catkin_ws/install_isolated/setup.bash
+# source /home/pi/kotyambaCar/src/catkin-ws/devel/setup.bash
+source ~/.bashrc
 
 export ROS_IP="$(getent ahosts raspberrypi.local | awk 'NR==1{ print $1 }')"
 echo "ROS_IP $ROS_IP"
