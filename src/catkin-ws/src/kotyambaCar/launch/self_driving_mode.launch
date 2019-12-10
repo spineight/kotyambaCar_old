@@ -1,21 +1,19 @@
 <launch>
   <!-- <include file="$(find kotyambaCar)/launch/master.launch" />
   <include file="$(find kotyambaCar)/launch/slave.launch" /> -->
-  <arg name="self_driving_mode" default="$(env ROS_MASTER_IP)" />
-
-  <machine name="slave" address="raspberrypi.local" 
+  <machine name="raspberry_pi" address="raspberrypi.local" 
     user="pi" password="321" 
     env-loader="$(env KOTYAMBA_REPO_RASPBERRY)/src/catkin-ws/src/kotyambaCar/scripts/setup_raspberry_pi_nodes.sh" >
   </machine>
 
-  <node pkg="kotyambaCar" type="command_listener.py" name="command_listener" machine="slave"/>
-  <node pkg="kotyambaCar" type="ultrasonic_sensor.py" name="ultrasonic_sensor" machine="slave" >
+  <node pkg="kotyambaCar" type="command_listener.py" name="command_listener" machine="raspberry_pi"/>
+  <node pkg="kotyambaCar" type="ultrasonic_sensor.py" name="ultrasonic_sensor" machine="raspberry_pi" >
     <param name="~frequency" value="10.0" />
   </node>
 
-  <machine name="master" address="commandCenter.local" 
+  <machine name="command_center" address="commandCenter.local" 
     user="oleg" password="321" 
     env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/src/catkin-ws/src/kotyambaCar/scripts/setup_command_center_nodes.sh">
   </machine>
-  <node pkg="kotyambaCar" type="command_center.py" name="command_center" machine="master"/>
+  <node pkg="kotyambaCar" type="command_center.py" name="command_center" machine="command_center"/>
 </launch>

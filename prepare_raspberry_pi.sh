@@ -33,10 +33,12 @@ systemctl status start_tornado_webserver.service
 echo "#### 3. Setting up environment variables ####"
 export KOTYAMBA_REPO_RASPBERRY="$(pwd)"
 echo "setting KOTYAMBA_REPO_RASPBERRY to $KOTYAMBA_REPO_RASPBERRY"
+echo "export KOTYAMBA_REPO_RASPBERRY='$(pwd)' " >> ~/.bashrc
 
 read -p "Enter fullpath to kotyambaCar repo on command_center machine: " fullpath
 export KOTYAMBA_REPO_COMMAND_CENTER="$fullpath"
 echo "KOTYAMBA_REPO_COMMAND_CENTER was set to: $KOTYAMBA_REPO_COMMAND_CENTER"
+echo "export KOTYAMBA_REPO_COMMAND_CENTER='$fullpath' " >> ~/.bashrc
 echo "check it!: echo $KOTYAMBA_REPO_COMMAND_CENTER"
 
 echo "#### 4. allow ssh to command center ####"
