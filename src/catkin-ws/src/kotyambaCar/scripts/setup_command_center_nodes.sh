@@ -7,4 +7,5 @@ echo "ROS_MASTER_URI $ROS_MASTER_URI"
 export ROS_IP="$ROS_MASTER_IP"
 echo "ROS_IP $ROS_IP"
 
+echo "Allow ssh to RaspberryPI"
 export ROSLAUNCH_SSH_UNKNOWN=1
