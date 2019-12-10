@@ -32,3 +32,6 @@ sudo cp /home/oleg/dev/kotyambaCar/src/catkin-ws/src/kotyambaCar/scripts/setup_c
 sudo systemctl daemon-reload
 # make service running on system boot:  
 sudo systemctl enable setup_command_center_ros_network.service --now
+
+# check service status:  
+systemctl status setup_command_center_ros_network.servic

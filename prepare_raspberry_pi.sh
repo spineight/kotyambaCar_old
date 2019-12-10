@@ -36,6 +36,9 @@ sudo systemctl daemon-reload
 # make service running on system boot:  
 sudo systemctl enable setup_raspberry_pi_ros_network.service --now
 
+# check service status:  
+systemctl status setup_raspberry_pi_ros_network.service
+
 echo "#### 3. Setting up environment variables ####"
 export KOTYAMBA_REPO_RASPBERRY="$(pwd)"
 echo "setting KOTYAMBA_REPO_RASPBERRY to $KOTYAMBA_REPO_RASPBERRY"
