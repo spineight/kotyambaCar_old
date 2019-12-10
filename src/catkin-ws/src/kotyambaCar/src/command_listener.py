@@ -3,8 +3,8 @@
 # https://stackoverflow.com/questions/1054271/how-to-import-a-python-class-that-is-in-a-directory-above
 import os
 import sys
-print os.environ['KOTYAMBA_PATH']
-sys.path.append("{}/src/control_motors".format(os.environ['KOTYAMBA_PATH'])) # Adds higher directory to python modules path.
+print os.environ['KOTYAMBA_REPO_RASPBERRY']
+sys.path.append("{}/src/control_motors".format(os.environ['KOTYAMBA_REPO_RASPBERRY'])) # Adds higher directory to python modules path.
 from motor_pwm import Motor
 from vehicle import Vehicle
 

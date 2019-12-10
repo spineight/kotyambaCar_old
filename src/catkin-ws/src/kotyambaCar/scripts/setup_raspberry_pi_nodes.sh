@@ -13,4 +13,7 @@ echo "ROS_MASTER_IP: $ROS_MASTER_IP"
 export ROS_MASTER_URI="http://$ROS_MASTER_IP:11311"
 echo "ROS_MASTER_URI $ROS_MASTER_URI"
 
+echo "Allow ssh to command_center"
+export ROSLAUNCH_SSH_UNKNOWN=1
+
 exec "$@"

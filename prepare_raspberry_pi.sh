@@ -39,7 +39,8 @@ read -p "Enter fullpath to kotyambaCar repo on command_center machine: " fullpat
 export KOTYAMBA_REPO_COMMAND_CENTER="$fullpath"
 echo "KOTYAMBA_REPO_COMMAND_CENTER was set to: $KOTYAMBA_REPO_COMMAND_CENTER"
 echo "export KOTYAMBA_REPO_COMMAND_CENTER='$fullpath' " >> ~/.bashrc
-echo "check it!: echo $KOTYAMBA_REPO_COMMAND_CENTER"
+echo "check it!: echo '$'KOTYAMBA_REPO_COMMAND_CENTER"
 
 echo "#### 4. allow ssh to command center ####"
 export ROSLAUNCH_SSH_UNKNOWN=1
+echo "export ROSLAUNCH_SSH_UNKNOWN=1" >> ~/.bashrc
