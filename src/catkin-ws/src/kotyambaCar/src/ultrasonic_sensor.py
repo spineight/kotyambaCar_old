@@ -8,8 +8,8 @@ import time
 class Ultrasonic_sensor():
     def __init__(self):
         pub = rospy.Publisher('ultrasonic_distance', ultrasonic_distance)
-        rospy.init_node('ultrasonic_distance', anonymous=True)
-        frequency = rospy.get_param('/ultrasonic_sensor/frequency')
+        rospy.init_node('ultrasonic_sensor', anonymous=True)
+        frequency = 10#rospy.get_param('/ultrasonic_sensor/frequency')
         r = rospy.Rate(frequency) #hz
         msg = ultrasonic_distance()
 
