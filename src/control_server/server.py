@@ -7,9 +7,6 @@ import tornado.options
 import tornado.web
 import tornado.websocket
 
-# https://stackoverflow.com/questions/1054271/how-to-import-a-python-class-that-is-in-a-directory-above
-import sys
-sys.path.append("../control_motors") # Adds higher directory to python modules path.
 from motor_pwm import Motor
 from vehicle import Vehicle
  
@@ -36,6 +33,10 @@ def setup_env_vars_for_ROS_IP():
   print "ROS_MASTER_IP:{}".format(os.environ["ROS_MASTER_IP"])
   os.environ["ROS_MASTER_URI"] = "http://{}:11311".format(raspberry_pi_ip)
   print "ROS_MASTER_URI:{}".format(os.environ["ROS_MASTER_URI"])
+
+  KOTYAMBA_REPO_RASPBERRY = subprocess.check_output(["git", "rev-parse", "--show-toplevel"])
+  os.environ["KOTYAMBA_REPO_RASPBERRY"] = KOTYAMBA_REPO_RASPBERRY
+  print "KOTYAMBA_REPO_RASPBERRY: {}".format(os.environ["KOTYAMBA_REPO_RASPBERRY"])
 
 
 ### handles requests: http://kotyambacar.local:8084/
@@ -146,8 +147,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     print "enable_autonomous_mode"
     print "stopping Motion module"
     os.system("sudo killall motion")
-    # print subprocess.check_output(['source', '../catkin-ws/src/kotyambaCar/scripts/setup_slave_node.sh'])
-    # print subprocess.check_output(['rosrun','kotyambaCar', 'command_listener.py'])
 
  
   def on_close(self):

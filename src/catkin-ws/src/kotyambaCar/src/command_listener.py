@@ -1,10 +1,12 @@
 #! /usr/bin/env python
 
-# https://stackoverflow.com/questions/1054271/how-to-import-a-python-class-that-is-in-a-directory-above
 import os
 import sys
-print os.environ['KOTYAMBA_REPO_RASPBERRY']
-sys.path.append("{}/src/control_motors".format(os.environ['KOTYAMBA_REPO_RASPBERRY'])) # Adds higher directory to python modules path.
+# https://stackoverflow.com/questions/1054271/how-to-import-a-python-class-that-is-in-a-directory-above
+sys.path.append("{}/src/control_motors".format(os.environ["KOTYAMBA_REPO_RASPBERRY"].rstrip()))
+print "added paths to *.py files to PYTHON_PATH:"
+print(sys.path)
+
 from motor_pwm import Motor
 from vehicle import Vehicle
 
