@@ -16,6 +16,28 @@ from vehicle import Vehicle
 from tornado.options import define, options
 define("port", default=8085, help="run on the given port", type=int)
 
+# ROS launch files
+# http://wiki.ros.org/roslaunch/API%20Usage
+import roslaunch
+class roslaunch_info:
+  def __init__(self, name, launch):
+    self.name = name
+    self.launch = launch
+
+import subprocess
+
+def setup_env_vars_for_ROS_IP():
+  print "#### setting env vars for ROS ip ####"
+  raspberry_pi_ip = subprocess.check_output(["getent", "ahosts", "raspberrypi.local"]).split()[0]
+
+  os.environ["ROS_IP"] = raspberry_pi_ip
+  print "ROS_IP:{}".format(os.environ["ROS_IP"])
+  os.environ["ROS_MASTER_IP"] = raspberry_pi_ip
+  print "ROS_MASTER_IP:{}".format(os.environ["ROS_MASTER_IP"])
+  os.environ["ROS_MASTER_URI"] = "http://{}:11311".format(raspberry_pi_ip)
+  print "ROS_MASTER_URI:{}".format(os.environ["ROS_MASTER_URI"])
+
+
 ### handles requests: http://kotyambacar.local:8084/
 class IndexHandler(tornado.web.RequestHandler):
   def get(self):
@@ -26,7 +48,9 @@ class IndexHandler(tornado.web.RequestHandler):
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
   # WebSocketHandler
   def initialize(self, car):
+    print "initializing {}".format(self.__class__.__name__)
     self.car = car
+    self.active_launch_file = None
   
   # overridden
   # Invoked when a new WebSocket is opened.
@@ -41,6 +65,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     # Returns a Future which can be used for flow control.
     self.write_message("connected")
  
+
   # overridden
   # Handle incoming messages on the WebSocket
   def on_message(self, message):
@@ -81,6 +106,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
       print str(e)
 
   def enable_manual_mode(self):
+    if(self.active_launch_file is not None):
+      print "terminating active launch file: {}".format(self.active_launch_file.name)
+      self.active_launch_file.launch.shutdown()
     print "manual mode"
     print "starting Motion module, streaming on port 8081"
     os.system("sudo killall motion")
@@ -90,16 +118,30 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     print "enable_manual_mode"
 
   def enable_training_mode(self):
+    
     print "stopping Motion module"
     print "enable_training_mode"
     os.system("sudo killall motion")
 
   def enable_autonomous_mode(self):
+    # check that Command center is up
+    try:
+      command_center_ip = subprocess.check_output(["getent", "ahosts", "commandCenter.local"]).split()[0]
+      print "Found commandCenter machine: {}".format(command_center_ip)
+    except Exception as e:
+      print "Error! commandCenter machine is not available \n For self-driving mode to work: commandCenter should be up and running"
+    uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+    roslaunch.configure_logging(uuid)
+    # launch = roslaunch.parent.ROSLaunchParent(uuid, [os.path.join(os.path.abspath("../"), "../catkin-ws/src/kotyambaCar/launch/self_driving_mode.launch")])
+    launch = roslaunch.parent.ROSLaunchParent(uuid, ["../catkin-ws/src/kotyambaCar/launch/self_driving_mode.launch"])
+    self.active_launch_file = roslaunch_info("training mode",launch)
+    launch.start()
+    rospy.loginfo("training mode launch file started")
     print "enable_autonomous_mode"
     print "stopping Motion module"
     os.system("sudo killall motion")
     # print subprocess.check_output(['source', '../catkin-ws/src/kotyambaCar/scripts/setup_slave_node.sh'])
-    print subprocess.check_output(['rosrun','kotyambaCar', 'command_listener.py'])
+    # print subprocess.check_output(['rosrun','kotyambaCar', 'command_listener.py'])
 
  
   def on_close(self):
@@ -125,8 +167,9 @@ if __name__ == "__main__":
   SteerControlMotor = Motor("../control_motors/steering_motor.yaml")
   car = Vehicle(SpeedControlMotor, SteerControlMotor)
 
-  app = make_app(car)
+  setup_env_vars_for_ROS_IP()
 
+  app = make_app(car)
   
   httpServer = tornado.httpserver.HTTPServer(app)
   try:
