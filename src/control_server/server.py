@@ -105,10 +105,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     except Exception as e:
       print str(e)
 
-  def enable_manual_mode(self):
+  def close_all_running_modes(self):
     if(self.active_launch_file is not None):
       print "terminating active launch file: {}".format(self.active_launch_file.name)
       self.active_launch_file.launch.shutdown()
+      self.active_launch_file = None
+
+  def enable_manual_mode(self):
+    self.close_all_running_modes()
     print "manual mode"
     print "starting Motion module, streaming on port 8081"
     os.system("sudo killall motion")
@@ -118,12 +122,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     print "enable_manual_mode"
 
   def enable_training_mode(self):
+    self.close_all_running_modes()
     
     print "stopping Motion module"
     print "enable_training_mode"
     os.system("sudo killall motion")
 
   def enable_autonomous_mode(self):
+    self.close_all_running_modes()
     # check that Command center is up
     try:
       command_center_ip = subprocess.check_output(["getent", "ahosts", "commandCenter.local"]).split()[0]
