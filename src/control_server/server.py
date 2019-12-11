@@ -118,8 +118,11 @@ def make_app(car):
 if __name__ == "__main__":
   tornado.options.parse_command_line()
 
-  SpeedControlMotor = Motor(7,8,1,100)
-  SteerControlMotor = Motor(9,10,11,100)
+  # SpeedControlMotor = Motor(7,8,1,100)
+  # SteerControlMotor = Motor(9,10,11,100)
+
+  SpeedControlMotor = Motor("../control_motors/speed_motor.yaml")
+  SteerControlMotor = Motor("../control_motors/steering_motor.yaml")
   car = Vehicle(SpeedControlMotor, SteerControlMotor)
 
   app = make_app(car)

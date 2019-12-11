@@ -14,6 +14,11 @@ python -m pip install tornado
 python -m pip install RPi.GPIO
 sudo apt-get install motion -y
 
+
+pip install pyyaml #yaml files are used for motors configs
+# https://stackoverflow.com/questions/55551191/module-yaml-has-no-attribute-fullloader
+pip install -U PyYAML
+
 #pip --version
 #pip install virtualenv
 #echo 'PATH="$PATH:$HOME/.local/bin"' >> ~/.bashrc
