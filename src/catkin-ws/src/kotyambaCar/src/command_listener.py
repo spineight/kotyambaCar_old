@@ -18,6 +18,8 @@ class Command_listener:
         pwm_frequency = 200
         SpeedControlMotor = Motor(7,8,1, pwm_frequency)
         SteerControlMotor = Motor(9,10,11, pwm_frequency)
+        # SpeedControlMotor = Motor("../../../../control_motors/speed_motor.yaml")
+        # SteerControlMotor = Motor("../../../../control_motors/steering_motor.yaml")
         self.car = Vehicle(SpeedControlMotor, SteerControlMotor)
         print "starting command_listener node"
         rospy.init_node("command_listener") # removed ,anonymous=True to be able to kill it by name
@@ -35,4 +37,7 @@ class Command_listener:
             self.car.moveBackwardAsync(data.speed_dc, data.steer_dc, data.active_time_sec)
 
 if __name__ == '__main__':
-    listener = Command_listener()
+    try:
+        listener = Command_listener()
+    except rospy.ROSInterruptException:
+        print "Command listener was interrupted"

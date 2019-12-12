@@ -15,8 +15,8 @@ def command_center():
     r = rospy.Rate(rateHz)
     msg = movement_command()
     msg.speed_dc = 80
-    msg.steer_dc = 90
-    msg.active_time_sec = 1
+    msg.steer_dc = -90
+    msg.active_time_sec = 5
 
     while not rospy.is_shutdown():
         rospy.loginfo(msg)
@@ -26,4 +26,5 @@ def command_center():
 if __name__ == '__main__':
     try:
         command_center()
-    except rospy.ROSInterruptException: pass
+    except rospy.ROSInterruptException:
+        print "Command center was interrupted"

@@ -8,10 +8,9 @@
   <node pkg="kotyambaCar" type="ultrasonic_sensor.py" name="ultrasonic_sensor" machine="raspberry_pi" >
     <param name="~frequency" value="10.0" />
   </node>
-
-  <machine name="command_center" address="commandCenter.local" 
+  <!-- <machine name="command_center" address="commandCenter.local" 
     user="oleg" password="321" 
     env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/src/catkin-ws/src/kotyambaCar/scripts/setup_command_center_nodes.sh">
-  </machine>
-  <node pkg="kotyambaCar" type="command_center.py" name="command_center" machine="command_center"/>
+  </machine> -->
+  <!-- <node pkg="kotyambaCar" type="command_center.py" name="command_center" machine="command_center"/> -->
 </launch>

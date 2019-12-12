@@ -1,6 +1,27 @@
 import os # os.system("cmd")
 import subprocess 
 
+def setup_env_vars_for_ROS_IP():
+  print "#### setting env vars for ROS ip ####"
+  raspberry_pi_ip = subprocess.check_output(["getent", "ahosts", "raspberrypi.local"]).split()[0]
+
+  os.environ["ROS_IP"] = raspberry_pi_ip
+  print "ROS_IP:{}".format(os.environ["ROS_IP"])
+  os.environ["ROS_MASTER_IP"] = raspberry_pi_ip
+  print "ROS_MASTER_IP:{}".format(os.environ["ROS_MASTER_IP"])
+  os.environ["ROS_MASTER_URI"] = "http://{}:11311".format(raspberry_pi_ip)
+  print "ROS_MASTER_URI:{}".format(os.environ["ROS_MASTER_URI"])
+
+  KOTYAMBA_REPO_RASPBERRY = subprocess.check_output(["git", "rev-parse", "--show-toplevel"])
+  os.environ["KOTYAMBA_REPO_RASPBERRY"] = KOTYAMBA_REPO_RASPBERRY
+  print "KOTYAMBA_REPO_RASPBERRY: {}".format(os.environ["KOTYAMBA_REPO_RASPBERRY"])
+
+import sys
+# https://stackoverflow.com/questions/1054271/how-to-import-a-python-class-that-is-in-a-directory-above
+sys.path.append("{}/src/control_motors".format(os.environ["KOTYAMBA_REPO_RASPBERRY"].rstrip()))
+print "added paths to *.py files to PYTHON_PATH:"
+print(sys.path)
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
@@ -21,22 +42,7 @@ class roslaunch_info:
     self.name = name
     self.launch = launch
 
-import subprocess
 
-def setup_env_vars_for_ROS_IP():
-  print "#### setting env vars for ROS ip ####"
-  raspberry_pi_ip = subprocess.check_output(["getent", "ahosts", "raspberrypi.local"]).split()[0]
-
-  os.environ["ROS_IP"] = raspberry_pi_ip
-  print "ROS_IP:{}".format(os.environ["ROS_IP"])
-  os.environ["ROS_MASTER_IP"] = raspberry_pi_ip
-  print "ROS_MASTER_IP:{}".format(os.environ["ROS_MASTER_IP"])
-  os.environ["ROS_MASTER_URI"] = "http://{}:11311".format(raspberry_pi_ip)
-  print "ROS_MASTER_URI:{}".format(os.environ["ROS_MASTER_URI"])
-
-  KOTYAMBA_REPO_RASPBERRY = subprocess.check_output(["git", "rev-parse", "--show-toplevel"])
-  os.environ["KOTYAMBA_REPO_RASPBERRY"] = KOTYAMBA_REPO_RASPBERRY
-  print "KOTYAMBA_REPO_RASPBERRY: {}".format(os.environ["KOTYAMBA_REPO_RASPBERRY"])
 
 
 ### handles requests: http://kotyambacar.local:8084/
@@ -136,7 +142,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
       command_center_ip = subprocess.check_output(["getent", "ahosts", "commandCenter.local"]).split()[0]
       print "Found commandCenter machine: {}".format(command_center_ip)
     except Exception as e:
+      print "#"*20
+      print "#"*20
       print "Error! commandCenter machine is not available \n For self-driving mode to work: commandCenter should be up and running"
+      print "#"*20
+      print "#"*20
     uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
     roslaunch.configure_logging(uuid)
     # launch = roslaunch.parent.ROSLaunchParent(uuid, [os.path.join(os.path.abspath("../"), "../catkin-ws/src/kotyambaCar/launch/self_driving_mode.launch")])
@@ -164,9 +174,6 @@ def make_app(car):
  
 if __name__ == "__main__":
   tornado.options.parse_command_line()
-
-  # SpeedControlMotor = Motor(7,8,1,100)
-  # SteerControlMotor = Motor(9,10,11,100)
 
   SpeedControlMotor = Motor("../control_motors/speed_motor.yaml")
   SteerControlMotor = Motor("../control_motors/steering_motor.yaml")

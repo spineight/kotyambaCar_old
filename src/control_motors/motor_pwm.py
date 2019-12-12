@@ -54,6 +54,7 @@ class Motor:
         see this: 
         https://raspi.tv/2013/rpi-gpio-basics-3-how-to-exit-gpio-programs-cleanly-avoid-warnings-and-protect-your-pi 
     '''
+    print "Doing GPIO.cleanup() in motor destructor"
     GPIO.cleanup()
 
 
