@@ -4,15 +4,15 @@
     env-loader="$(env KOTYAMBA_REPO_RASPBERRY)/src/catkin-ws/src/kotyambaCar/scripts/setup_raspberry_pi_nodes.sh" >
   </machine>
 
-  <node pkg="kotyambaCar" type="command_listener.py" name="command_listener" machine="raspberry_pi"/>
+  <!-- <node pkg="kotyambaCar" type="command_listener.py" name="command_listener" machine="raspberry_pi"/>
   <node pkg="kotyambaCar" type="ultrasonic_sensor.py" name="ultrasonic_sensor" machine="raspberry_pi" >
     <param name="~frequency" value="10.0" />
-  </node>
+  </node> -->
 
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" machine="raspberry_pi" >
     <param name="video_device" value="/dev/video0" />
-    <param name="image_width" value="640" />
-    <param name="image_height" value="480" />
+    <param name="image_width" value="320" />
+    <param name="image_height" value="240" />
     <param name="pixel_format" value="yuyv" />
     <param name="camera_frame_id" value="usb_cam" />
     <param name="io_method" value="mmap"/>
