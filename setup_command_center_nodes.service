@@ -4,6 +4,7 @@ After=network-online.target
 
 [Service]
 ExecStart=/bin/bash ./setup_command_center_nodes.sh
+WorkingDirectory= ./
 User=oleg
 
 [Install]
