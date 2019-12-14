@@ -3,7 +3,7 @@ Description=Set up all variables required for distributed ROS nodes to communica
 After=network-online.target
 
 [Service]
-ExecStart=./setup_command_center_nodes.sh
+ExecStart=/bin/bash ./setup_command_center_nodes.sh
 User=oleg
 
 [Install]
