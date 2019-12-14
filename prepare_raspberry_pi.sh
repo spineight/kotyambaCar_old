@@ -23,13 +23,18 @@ sudo systemctl enable start_tornado_webserver.service --now
 # check service status:  
 systemctl status start_tornado_webserver.service
 
+# KOTYAMBA_REPO_RASPBERRY is used in setup_raspberry_pi_nodes.service
+# so it should be defined
+export KOTYAMBA_REPO_RASPBERRY="$(pwd)"
+echo "setting KOTYAMBA_REPO_RASPBERRY to $KOTYAMBA_REPO_RASPBERRY"
+echo "export KOTYAMBA_REPO_RASPBERRY='$(pwd)' " >> ~/.bashrc
 echo "##### 3. Using system service to start scripts that setup ROS network vars"
 sudo cp /home/pi/kotyambaCar/setup_raspberry_pi_nodes.service /etc/systemd/system
 sudo systemctl daemon-reload
 # make service running on system boot:  
-sudo systemctl enable setup_raspberry_pi_ros_network.service --now
+sudo systemctl enable setup_raspberry_pi_nodes.service --now
 # check service status:  
-systemctl status setup_raspberry_pi_ros_network.service
+systemctl status setup_raspberry_pi_nodes.service
 
 # echo "#### 3. Setting up environment variables ####"
 # export KOTYAMBA_REPO_RASPBERRY="$(pwd)"
