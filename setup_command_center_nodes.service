@@ -1,0 +1,10 @@
+Unit]
+Description=Set up all variables required for distributed ROS nodes to communicate
+After=network-online.target
+
+[Service]
+ExecStart=./setup_command_center_nodes.sh
+User=pi
+
+[Install]
+WantedBy=multi-user.target

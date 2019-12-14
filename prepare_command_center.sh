@@ -1,42 +1,49 @@
 #!/bin/bash
 
-echo "This script should be run on command_center machine"
-echo "This script should be sourced\n\n"
-echo "setting path for kotyambaCar repo folders on Raspberry, will be used by ROS  *.launch files\n\n"
+echo "####################################################################"
+echo "####   This script should be run ONCE on command_center machine ####"
+echo "####   This script should be sourced\n\n                        ####"
+echo "####################################################################"
 
 
-echo "installing required packages:"
-sudo apt-get update
-sudo apt-get install ros-melodic-web-video-server
+echo "Preparing command_center machine for kotyambaCar:"
 
-echo "#### Setting up environment variables ####"
+echo "Step 1. Install additional packages"
+sudo apt-get update -y
+sudo apt-get install ros-melodic-web-video-server -y
+
+echo "Step 2. Make sure SSH is working"
+sudo apt-get install openssh-server -y
+# Ubuntu comes with a firewall configuration tool called UFW. 
+# If the firewall is enabled on your system, make sure to open the SSH port:
+https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-18-04
+status="`sudo ufw status`"
+if [ "$status" != "Status: inactive" ]; then
+    echo "ufw is active, enabling ssh"
+    sudo ufw allow ssh
+else
+    echo "ufw is not active"
+fi
+echo "Status should be ready:"
+sudo systemctl status ssh
+
+### TODO: do I need it????
+echo "Step 2. Set path to the repo directory, we are referencing it in scripts"
 export KOTYAMBA_REPO_COMMAND_CENTER="$(pwd)"
 echo "setting KOTYAMBA_REPO_COMMAND_CENTER to $KOTYAMBA_REPO_COMMAND_CENTER"
 
-read -p "Enter fullpath to kotyambaCar repo on RaspberryPI: " fullpath
+# read -p "Enter fullpath to kotyambaCar repo on RaspberryPI: " fullpath
 
-export KOTYAMBA_REPO_RASPBERRY="$fullpath"
-echo "KOTYAMBA_REPO_RASPBERRY was set to: $KOTYAMBA_REPO_RASPBERRY"
-echo "check it! echo $KOTYAMBA_REPO_RASPBERRY"
+# export KOTYAMBA_REPO_RASPBERRY="$fullpath"
+# echo "KOTYAMBA_REPO_RASPBERRY was set to: $KOTYAMBA_REPO_RASPBERRY"
+# echo "check it! echo $KOTYAMBA_REPO_RASPBERRY"
 
-echo "Enabling ssh on Ubuntu 18.04"
-
-sudo apt-get update
-sudo apt-get install openssh-server -y
-
-# To verify that the installation was successful and SSH service is running 
-# type the following command which will print the SSH server status:
-sudo systemctl status ssh
-
-# Ubuntu comes with a firewall configuration tool called UFW. 
-# If the firewall is enabled on your system, make sure to open the SSH port:
-sudo ufw allow ssh
-
+echo "Step 3. Using systemd service to set up scripts to be started on boot"
 echo "##### 3. Using system service to start scripts that setup ROS network vars"
-sudo cp /home/oleg/dev/kotyambaCar/src/catkin-ws/src/kotyambaCar/scripts/setup_command_center_ros_network.service /etc/systemd/system
+sudo cp setup_command_center_nodes.service /etc/systemd/system
 sudo systemctl daemon-reload
 # make service running on system boot:  
-sudo systemctl enable setup_command_center_ros_network.service --now
+sudo systemctl enable setup_command_center_nodes.service --now
 
 # check service status:  
-systemctl status setup_command_center_ros_network.servic
+systemctl status setup_command_center_nodes.service
