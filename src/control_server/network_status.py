@@ -6,6 +6,7 @@ def get_command_center_ip():
     command_center_ip = subprocess.check_output(["getent", "ahosts", "commandCenter.local"]).split()[0]
     return command_center_ip
   except Exception as e:
+    print e
     # https://realpython.com/python-exceptions/
     raise Exception("commandCenter.local not available")
   
