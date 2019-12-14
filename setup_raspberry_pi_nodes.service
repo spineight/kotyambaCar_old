@@ -1,0 +1,10 @@
+[Unit]
+Description=Set up all variables required for distributed ROS nodes to communicate
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/env /home/pi/kotyambaCar/setup_raspberry_pi_nodess.sh
+User=pi
+
+[Install]
+WantedBy=multi-user.target
