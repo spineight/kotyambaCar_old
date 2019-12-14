@@ -1,33 +1,30 @@
+ <!-- usb cam is runnin on Rpi, to reduce load on Rpi instead of motion package running on it,
+ web_video_server was added, that is running on command_center and listening to the compressed_image,
+ so in the client in the same network you can do in web browser: -->
+
+ <!-- commands to try in the browser:
+ - http://commandcenter.local:8080/stream?topic=/usb_cam/image_raw&type=ros_compressed
+ - http://commandcenter.local:8080 -->
+ 
 <launch>
   <machine name="raspberry_pi" address="raspberrypi.local" 
     user="pi" password="321" 
     env-loader="$(env KOTYAMBA_REPO_RASPBERRY)/src/catkin-ws/src/kotyambaCar/scripts/setup_raspberry_pi_nodes.sh" >
   </machine>
 
-  <!-- <node pkg="kotyambaCar" type="command_listener.py" name="command_listener" machine="raspberry_pi"/>
-  <node pkg="kotyambaCar" type="ultrasonic_sensor.py" name="ultrasonic_sensor" machine="raspberry_pi" >
-    <param name="~frequency" value="10.0" />
-  </node> -->
+  <machine name="command_center" address="commandCenter.local" 
+    user="oleg" password="321" 
+    env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/src/catkin-ws/src/kotyambaCar/scripts/setup_command_center_nodes.sh">
+  </machine>
 
-<!-- <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" machine="raspberry_pi" > -->
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node"  machine="raspberry_pi" >
     <param name="video_device" value="/dev/video0" />
     <param name="image_width" value="320" />
     <param name="image_height" value="240" />
     <param name="pixel_format" value="yuyv" />
     <param name="camera_frame_id" value="usb_cam" />
-    <!-- <param name="autoexposure" value= "false"/> -->
     <param name="io_method" value="mmap"/>
   </node>
-  <!-- http://wiki.ros.org/image_view -->
-  <!-- <node name="image_view" pkg="image_view" type="image_view" respawn="false" output="screen">
-    <remap from="image" to="/usb_cam/image_raw"/>
-    <param name="autosize" value="true" />
-  </node> -->
 
-  <!-- <machine name="command_center" address="commandCenter.local" 
-    user="oleg" password="321" 
-    env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/src/catkin-ws/src/kotyambaCar/scripts/setup_command_center_nodes.sh">
-  </machine> -->
-  <!-- <node pkg="kotyambaCar" type="command_center.py" name="command_center" machine="command_center"/> -->
+  <node name="web_video_server" pkg="web_video_server" type="web_video_server" machine="command_center" />
 </launch>

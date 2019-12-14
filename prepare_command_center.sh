@@ -4,6 +4,11 @@ echo "This script should be run on command_center machine"
 echo "This script should be sourced\n\n"
 echo "setting path for kotyambaCar repo folders on Raspberry, will be used by ROS  *.launch files\n\n"
 
+
+echo "installing required packages:"
+sudo apt-get update
+sudo apt-get install ros-melodic-web-video-server
+
 echo "#### Setting up environment variables ####"
 export KOTYAMBA_REPO_COMMAND_CENTER="$(pwd)"
 echo "setting KOTYAMBA_REPO_COMMAND_CENTER to $KOTYAMBA_REPO_COMMAND_CENTER"

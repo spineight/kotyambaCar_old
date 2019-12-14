@@ -10,9 +10,11 @@ echo "#### 1. Install all required packages ####"
 #echo "preparing environment"
 sudo apt-get update -y
 sudo apt install python-pip -y
+echo "installing required packages"
+echo "web server"
 python -m pip install tornado
+echo "RPi GPIO lib"
 python -m pip install RPi.GPIO
-sudo apt-get install motion -y
 
 
 pip install pyyaml #yaml files are used for motors configs
