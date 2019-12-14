@@ -3,7 +3,7 @@ Description=Set up all variables required for distributed ROS nodes to communica
 After=network-online.target
 
 [Service]
-ExecStart=/usr/bin/env "${KOTYAMBA_REPO_COMMAND_CENTER}/setup_command_center_nodes.sh"
+ExecStart=/usr/bin/env /home/oleg/dev/kotyambaCar/setup_command_center_nodes.sh
 User=oleg
 
 [Install]
