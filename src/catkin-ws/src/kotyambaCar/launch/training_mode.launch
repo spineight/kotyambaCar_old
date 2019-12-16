@@ -25,7 +25,5 @@
     <param name="camera_frame_id" value="usb_cam" />
     <param name="io_method" value="mmap"/>
   </node>
-
-  <node name="web_video_server" pkg="web_video_server" type="web_video_server" machine="command_center" />
  
 </launch>

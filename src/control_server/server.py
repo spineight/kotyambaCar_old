@@ -40,7 +40,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     self.car = car
     self.driving_modes_manager = DrivingModesManager()
     self.movement_cmd_publisher = rospy.Publisher('movement_command', movement_command)
-    rospy.init_node('server_node', anonymous=True)
+    rospy.init_node('server_node')
   
   # overridden
   # Invoked when a new WebSocket is opened.
