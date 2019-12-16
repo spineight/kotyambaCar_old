@@ -17,15 +17,19 @@ class DrivingModesManager():
     self.terminate_active_mode()
     self.active_mode_name="maunal mode"
     print "starting {}".format(self.active_mode_name)
+    uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+    roslaunch.configure_logging(uuid)
     try:
       get_command_center_ip()
     except Exception as e:
       print e
-      print "starting without camera broadcasting"
+      print "starting manual mode without camera broadcasting"
+      self.active_launch_file = roslaunch.parent.ROSLaunchParent(uuid, ["../catkin-ws/src/kotyambaCar/launch/manual_mode_without_camera.launch"])
+      self.active_launch_file.start()
+    
     else:
       print "started manual mode with camera broadcasting"
-      uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-      roslaunch.configure_logging(uuid)
+      
       self.active_launch_file = roslaunch.parent.ROSLaunchParent(uuid, ["../catkin-ws/src/kotyambaCar/launch/manual_mode_with_camera.launch"])
       self.active_launch_file.start()
       rospy.loginfo("started manual mode with camera broadcasting")
