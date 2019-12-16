@@ -25,5 +25,7 @@
     <param name="camera_frame_id" value="usb_cam" />
     <param name="io_method" value="mmap"/>
   </node>
+
+    <node name="movement_node" pkg="kotyambaCar" type="movement_node.py"  machine="raspberry_pi" />
  
 </launch>

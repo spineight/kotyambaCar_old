@@ -35,9 +35,9 @@ class IndexHandler(tornado.web.RequestHandler):
 ### https://www.tornadoweb.org/en/stable/websocket.html
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
   # WebSocketHandler
-  def initialize(self, car):
+  def initialize(self):
     print "initializing {}".format(self.__class__.__name__)
-    self.car = car
+    # self.car = car
     self.driving_modes_manager = DrivingModesManager()
     self.movement_cmd_publisher = rospy.Publisher('movement_command', movement_command)
     rospy.init_node('server_node')
@@ -91,7 +91,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     msg.speed_dc = speed_dc
     msg.steer_dc = steer_dc
     msg.is_emergency_stop = False
-    if(speed_dc < 30):
+    if(abs(speed_dc) < 30 and abs(steer_dc) < 30):
       msg.is_emergency_stop = True
     self.movement_cmd_publisher.publish(msg)
   
@@ -130,24 +130,24 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 
 ## use syntax {"car":car} - to pass argument to the WebSocketHandler initialize method
-def make_app(car):
+def make_app():
     return tornado.web.Application(
     handlers=[
       (r"/", IndexHandler), ## will handle all requests to http://kotyambacar.local:8085/
-      (r"/websocket", WebSocketHandler, {"car":car}) # maps handler to http://kotyambacar.local:8085/websocket request
+      (r"/websocket", WebSocketHandler) # maps handler to http://kotyambacar.local:8085/websocket request
       ]
   )
  
 if __name__ == "__main__":
   tornado.options.parse_command_line()
 
-  SpeedControlMotor = Motor("../control_motors/speed_motor.yaml")
-  SteerControlMotor = Motor("../control_motors/steering_motor.yaml")
-  car = Vehicle(SpeedControlMotor, SteerControlMotor)
+  # SpeedControlMotor = Motor("../control_motors/speed_motor.yaml")
+  # SteerControlMotor = Motor("../control_motors/steering_motor.yaml")
+  # car = Vehicle(SpeedControlMotor, SteerControlMotor)
 
   setup_distributed_ROS_environment()
 
-  app = make_app(car)
+  app = make_app()
   
   httpServer = tornado.httpserver.HTTPServer(app)
   try:

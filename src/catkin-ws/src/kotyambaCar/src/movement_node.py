@@ -15,11 +15,8 @@ from kotyambaCar.msg import movement_command
     
 class Movement_node:
     def __init__(self):
-        pwm_frequency = 200
-        SpeedControlMotor = Motor(7,8,1, pwm_frequency)
-        SteerControlMotor = Motor(9,10,11, pwm_frequency)
-        # SpeedControlMotor = Motor("../../../../control_motors/speed_motor.yaml")
-        # SteerControlMotor = Motor("../../../../control_motors/steering_motor.yaml")
+        SpeedControlMotor = Motor("/home/pi/kotyambaCar/src/control_motors/speed_motor.yaml")
+        SteerControlMotor = Motor("/home/pi/kotyambaCar/src/control_motors/steering_motor.yaml")
         self.car = Vehicle(SpeedControlMotor, SteerControlMotor)
         print "starting movement_node"
         rospy.init_node("movement_node") # removed ,anonymous=True to be able to kill it by name
