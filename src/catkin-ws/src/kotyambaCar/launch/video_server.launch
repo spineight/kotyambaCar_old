@@ -12,7 +12,7 @@
 
   <machine name="command_center" address="commandCenter.local" 
     user="oleg" password="321" 
-    env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/src/catkin-ws/src/kotyambaCar/scripts/setup_command_center_nodes.sh">
+    env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/setup_command_center_nodes.sh">
   </machine>
 
   <node name="web_video_server" pkg="web_video_server" type="web_video_server" machine="command_center" />

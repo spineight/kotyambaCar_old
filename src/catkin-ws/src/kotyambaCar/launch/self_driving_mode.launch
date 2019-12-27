@@ -1,17 +1,17 @@
 <launch>
   <machine name="raspberry_pi" address="raspberrypi.local" 
     user="pi" password="321" 
-    env-loader="$(env KOTYAMBA_REPO_RASPBERRY)/src/catkin-ws/src/kotyambaCar/scripts/setup_raspberry_pi_nodes.sh" >
+    env-loader="$(env KOTYAMBA_REPO_RASPBERRY)/setup_raspberry_pi_nodes.sh" >
   </machine>
 
-  <node pkg="kotyambaCar" type="command_listener.py" name="command_listener" machine="raspberry_pi"/>
-  <node pkg="kotyambaCar" type="ultrasonic_sensor.py" name="ultrasonic_sensor" machine="raspberry_pi" >
+  <node name="movement_node" pkg="kotyambaCar" type="movement_node.py"  machine="raspberry_pi" />
+  <node pkg="kotyambaCar" type="ultrasonic_sensor_node.py" name="ultrasonic_sensor_node" machine="raspberry_pi" >
     <param name="~frequency" value="10.0" />
   </node>
 
   <machine name="command_center" address="commandCenter.local" 
     user="oleg" password="321" 
-    env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/src/catkin-ws/src/kotyambaCar/scripts/setup_command_center_nodes.sh">
+    env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/setup_command_center_nodes.sh">
   </machine>
-  <node pkg="kotyambaCar" type="command_center.py" name="command_center" machine="command_center"/>
+  <node pkg="kotyambaCar" type="command_center_node.py" name="command_center_node" machine="command_center"/>
 </launch>

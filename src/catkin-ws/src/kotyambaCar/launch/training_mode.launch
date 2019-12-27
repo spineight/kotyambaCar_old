@@ -7,14 +7,15 @@
  - http://commandcenter.local:8080 -->
 
 <launch>
+  <include file="$(find kotyambaCar)/launch/video_server.launch"/>
   <machine name="raspberry_pi" address="raspberrypi.local" 
     user="pi" password="321" 
-    env-loader="$(env KOTYAMBA_REPO_RASPBERRY)/src/catkin-ws/src/kotyambaCar/scripts/setup_raspberry_pi_nodes.sh" >
+    env-loader="$(env KOTYAMBA_REPO_RASPBERRY)/setup_raspberry_pi_nodes.sh" >
   </machine>
 
   <machine name="command_center" address="commandCenter.local" 
     user="oleg" password="321" 
-    env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/src/catkin-ws/src/kotyambaCar/scripts/setup_command_center_nodes.sh">
+    env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/setup_command_center_nodes.sh">
   </machine>
 
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node"  machine="raspberry_pi" >
@@ -26,6 +27,6 @@
     <param name="io_method" value="mmap"/>
   </node>
 
-    <node name="movement_node" pkg="kotyambaCar" type="movement_node.py"  machine="raspberry_pi" />
+  <node name="movement_node" pkg="kotyambaCar" type="movement_node.py"  machine="raspberry_pi" />
  
 </launch>

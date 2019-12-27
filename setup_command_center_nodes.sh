@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source /opt/ros/melodic/setup.bash
+KOTYAMBA_REPO_COMMAND_CENTER=$(pwd)
 source $KOTYAMBA_REPO_COMMAND_CENTER/src/catkin-ws/devel/setup.bash
 
 echo "SETTING UP Master Node IP"
