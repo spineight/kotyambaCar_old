@@ -26,6 +26,6 @@
     <param name="io_method" value="mmap"/>
   </node>
 
-  <node name="web_video_server" pkg="web_video_server" type="web_video_server" machine="command_center" />
+    <node name="movement_node" pkg="kotyambaCar" type="movement_node.py"  machine="raspberry_pi" />
  
 </launch>

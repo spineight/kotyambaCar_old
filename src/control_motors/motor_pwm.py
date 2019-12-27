@@ -82,8 +82,10 @@ class Motor:
         for refs: https://sourceforge.net/p/raspberry-gpio-python/wiki/PWM/
     '''
     # enable forward rotation on motor
-    GPIO.output(self.first_gpio_id, isForward)
-    GPIO.output(self.second_gpio_id,not isForward)
+    GPIO.output(self.first_gpio_id, GPIO.HIGH if isForward else GPIO.LOW)
+    GPIO.output(self.second_gpio_id, GPIO.LOW if isForward else GPIO.HIGH)
 
     # rotation speed
     self.speedPWM.ChangeDutyCycle(dutyCycle)
+    #self.speedPWM.start(dutyCycle)
+

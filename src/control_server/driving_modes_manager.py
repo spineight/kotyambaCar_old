@@ -17,21 +17,26 @@ class DrivingModesManager():
     self.terminate_active_mode()
     self.active_mode_name="maunal mode"
     print "starting {}".format(self.active_mode_name)
+    uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+    roslaunch.configure_logging(uuid)
+    self.active_launch_file = roslaunch.parent.ROSLaunchParent(uuid, ["../catkin-ws/src/kotyambaCar/launch/manual_mode.launch"])
+    self.active_launch_file.start()
+    
+  def start_training_mode(self):
+    self.terminate_active_mode()
+    self.active_mode_name="training mode"
+    print "starting {}".format(self.active_mode_name)
+    uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+    roslaunch.configure_logging(uuid)
     try:
       get_command_center_ip()
     except Exception as e:
       print e
-      print "starting without camera broadcasting"
+      print "Can not start training mode! Running command center machine is required"
     else:
-      print "started manual mode with camera broadcasting"
-      uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-      roslaunch.configure_logging(uuid)
-      self.active_launch_file = roslaunch.parent.ROSLaunchParent(uuid, ["../catkin-ws/src/kotyambaCar/launch/manual_mode_with_camera.launch"])
+      self.active_launch_file = roslaunch.parent.ROSLaunchParent(uuid, ["../catkin-ws/src/kotyambaCar/launch/training_mode.launch"])
       self.active_launch_file.start()
-      rospy.loginfo("started manual mode with camera broadcasting")
-    
-  def start_training_mode(self):
-    self.terminate_active_mode()
+      rospy.loginfo("started training mode")
   
   def start_self_driving_mode(self):
     self.terminate_active_mode()

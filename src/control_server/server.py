@@ -1,14 +1,18 @@
 import os # os.system("cmd")
-
-
-from network_status import get_command_center_ip
-from environment import setup_distributed_ROS_environment
-
 import sys
 # https://stackoverflow.com/questions/1054271/how-to-import-a-python-class-that-is-in-a-directory-above
 sys.path.append("{}/src/control_motors".format(os.environ["KOTYAMBA_REPO_RASPBERRY"].rstrip()))
 print "added paths to *.py files to PYTHON_PATH:"
 print(sys.path)
+
+import rospy
+from kotyambaCar.msg import movement_command
+
+from network_status import get_command_center_ip
+from environment import setup_distributed_ROS_environment
+from driving_modes_manager import DrivingModesManager
+
+
 
 import tornado.httpserver
 import tornado.ioloop
@@ -18,8 +22,6 @@ import tornado.websocket
 
 from motor_pwm import Motor
 from vehicle import Vehicle
-
-from driving_modes_manager import DrivingModesManager
  
 from tornado.options import define, options
 define("port", default=8085, help="run on the given port", type=int)
@@ -33,10 +35,12 @@ class IndexHandler(tornado.web.RequestHandler):
 ### https://www.tornadoweb.org/en/stable/websocket.html
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
   # WebSocketHandler
-  def initialize(self, car):
+  def initialize(self):
     print "initializing {}".format(self.__class__.__name__)
-    self.car = car
+    # self.car = car
     self.driving_modes_manager = DrivingModesManager()
+    self.movement_cmd_publisher = rospy.Publisher('movement_command', movement_command)
+    rospy.init_node('server_node')
   
   # overridden
   # Invoked when a new WebSocket is opened.
@@ -64,7 +68,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
       message_list = message.split()
       msg_type = message_list[0]
       if(msg_type in "control_command"):
-        self.on_control_command(message_list[1:])
+        self.on_movement_command(message_list[1:])
       elif(msg_type in "mode_command"):
         self.on_mode_command(message_list[1])
       elif (msg_type in "status_info"):
@@ -73,7 +77,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     except Exception as e:
       print str(e)
 
-  def on_control_command(self, cmd):
+  def on_movement_command(self, cmd):
     xOffset, yOffset, viewWidth, viewHeight, slider_value = map(float, cmd)
     print "xOffset: {0}; yOffset {1}".format(xOffset, yOffset) 
     assert(viewWidth == viewHeight)
@@ -83,12 +87,13 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     speed_dc = yOffset / circleRadius * 100. # 0 <= speed_dc <= 100
     ## move car
     print "setting steer_dc:{} speed_dc:{}".format(steer_dc,speed_dc)
-    if(speed_dc > 0):
-      speed_dc = 100
-      car.moveForwardAsync(speed_dc, steer_dc, slider_value)
-    elif(speed_dc <0):
-      speed_dc = 100
-      car.moveBackwardAsync(abs(speed_dc), steer_dc, slider_value)
+    msg = movement_command()
+    msg.speed_dc = speed_dc
+    msg.steer_dc = steer_dc
+    msg.is_emergency_stop = False
+    if(abs(speed_dc) < 30 and abs(steer_dc) < 30):
+      msg.is_emergency_stop = True
+    self.movement_cmd_publisher.publish(msg)
   
   def on_mode_command(self, mode):
     if(mode in "manual"):
@@ -100,6 +105,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
   def enable_manual_mode(self):
     self.driving_modes_manager.terminate_active_mode()
+    self.driving_modes_manager.start_manual_mode()
 
   def enable_training_mode(self):
     try:
@@ -124,24 +130,24 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 
 ## use syntax {"car":car} - to pass argument to the WebSocketHandler initialize method
-def make_app(car):
+def make_app():
     return tornado.web.Application(
     handlers=[
       (r"/", IndexHandler), ## will handle all requests to http://kotyambacar.local:8085/
-      (r"/websocket", WebSocketHandler, {"car":car}) # maps handler to http://kotyambacar.local:8085/websocket request
+      (r"/websocket", WebSocketHandler) # maps handler to http://kotyambacar.local:8085/websocket request
       ]
   )
  
 if __name__ == "__main__":
   tornado.options.parse_command_line()
 
-  SpeedControlMotor = Motor("../control_motors/speed_motor.yaml")
-  SteerControlMotor = Motor("../control_motors/steering_motor.yaml")
-  car = Vehicle(SpeedControlMotor, SteerControlMotor)
+  # SpeedControlMotor = Motor("../control_motors/speed_motor.yaml")
+  # SteerControlMotor = Motor("../control_motors/steering_motor.yaml")
+  # car = Vehicle(SpeedControlMotor, SteerControlMotor)
 
   setup_distributed_ROS_environment()
 
-  app = make_app(car)
+  app = make_app()
   
   httpServer = tornado.httpserver.HTTPServer(app)
   try:

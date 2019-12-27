@@ -10,6 +10,36 @@ class Vehicle:
     self.steering_control_motor = steering_control_motor
     self.cv = threading.Condition()
 
+  def moveForward_(self, speed_dc, steer_dc):
+    '''
+      if steer_dc > 0 - move right, else - left 
+    '''
+    self.speed_control_motor.rotate(speed_dc,True)
+    if(steer_dc >= 0):
+      self.steering_control_motor.rotate(steer_dc,False) # right
+    else:
+      self.steering_control_motor.rotate(abs(steer_dc),True) # left
+
+  def moveBackward_(self, speed_dc, steer_dc):
+    '''
+      if steer_dc > 0 - move right, else - left 
+    '''
+    self.speed_control_motor.rotate(speed_dc,False)
+    if(steer_dc >= 0):
+      self.steering_control_motor.rotate(steer_dc,False) # right
+    else:
+      self.steering_control_motor.rotate(abs(steer_dc),True) # left
+
+  def stop_(self):
+    ''' soft stop, wheels can move'''
+    self.speed_control_motor.stop()
+    self.steering_control_motor.stop()
+
+  def hardBreak_(self):
+    ''' hard stop - wheels are blocked'''
+    self.speed_control_motor.emergency_stop()
+    self.steering_control_motor.emergency_stop()
+
   def moveForward(self,speed,active_time_sec):
     ''' simple method to check the wiring of Raspberry Pi, motors and H-bridge '''
     self.speed_control_motor.rotate(speed,True)

@@ -35,9 +35,9 @@ try :
   print "Turning motor A. Speed control"
   ## For motor to rotate on MotorA_direction_pin0 and MotorA_direction_pin1 should be opposite voltages (HIGH vs LOW)
   ## On one shoulde be 1 on another 0
-  GPIO.output(MotorA_direction_pin0, GPIO.HIGH)
-  GPIO.output(MotorA_direction_pin1, GPIO.LOW)
-  recommendedFreq = 400
+  GPIO.output(MotorA_direction_pin0, GPIO.LOW)
+  GPIO.output(MotorA_direction_pin1, GPIO.HIGH)
+  recommendedFreq = 100
   DC = 90
   action_time_sec = 5
   speedPWM = GPIO.PWM(MotorA_EnA_pin, recommendedFreq)
@@ -51,7 +51,7 @@ try :
   print "Turning motor B. Steering control"
   GPIO.output(MotorB_steering_pin0, GPIO.HIGH)
   GPIO.output(MotorB_steering_pin1, GPIO.LOW)
-  recommendedFreq = 400
+  recommendedFreq = 100
   DC = 80
   action_time_sec = 5
   directionPWM = GPIO.PWM(MotorB_EnB_pin, recommendedFreq)
