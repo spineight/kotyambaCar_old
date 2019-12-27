@@ -1,4 +1,4 @@
 directionPinFirst_GPIO_id : 7
 directionPinSecond_GPIO_id : 8
 speedPin_GPIO_id : 1
-pwm_frequency : 100
+pwm_frequency : 200

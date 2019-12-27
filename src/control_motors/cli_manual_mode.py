@@ -5,7 +5,7 @@ from vehicle import Vehicle
 
 def main():
   SpeedControlMotor = Motor(7,8,1,100)
-  SteerControlMotor = Motor(9,10,11,100)
+  SteerControlMotor = Motor(10,9,11,2)
   car = Vehicle(SpeedControlMotor, SteerControlMotor)
 
   print "Manual mode\n Used for understanding vechicle dynamics" 
@@ -13,7 +13,7 @@ def main():
 
   try:
     while(True):
-      print "Cmd format:****** %SPEED,%STEER,TIME_SEC******"
+      print "Cmd format:****** %SPEED,%STEER,TIME_SEC, freqForSteeringMotor******"
       print "speed in [-100..100] backward..forward"
       print "steer in [-100..100] left..right"
       print "\n\n\nFor ex.: '80,90,3' - move forward 80% of max power, right 90% of max power for 3 seconds"
@@ -26,8 +26,9 @@ def main():
       if(cmdStr in "s"):
         speed_dc, steer_dc, active_time = [0,0,0]
       else:
-        speed_dc, steer_dc, active_time = (float(v) for v in cmdStr.split(','))
+        speed_dc, steer_dc, active_time, freq_steering = (float(v) for v in cmdStr.split(','))
 
+      SteerControlMotor.speedPWM.ChangeFrequency(freq_steering)
       if(speed_dc >= 0):
         car.moveForwardAsync(speed_dc, steer_dc, active_time)
       else:
