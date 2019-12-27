@@ -13,6 +13,6 @@ def setup_distributed_ROS_environment():
   os.environ["ROS_MASTER_URI"] = "http://{}:11311".format(raspberry_pi_ip)
   print "ROS_MASTER_URI:{}".format(os.environ["ROS_MASTER_URI"])
 
-  KOTYAMBA_REPO_RASPBERRY = subprocess.check_output(["git", "rev-parse", "--show-toplevel"])
-  os.environ["KOTYAMBA_REPO_RASPBERRY"] = KOTYAMBA_REPO_RASPBERRY
-  print "KOTYAMBA_REPO_RASPBERRY: {}".format(os.environ["KOTYAMBA_REPO_RASPBERRY"])
+  # KOTYAMBA_REPO_RASPBERRY = subprocess.check_output(["git", "rev-parse", "--show-toplevel"])
+  # os.environ["KOTYAMBA_REPO_RASPBERRY"] = KOTYAMBA_REPO_RASPBERRY
+  # print "KOTYAMBA_REPO_RASPBERRY: {}".format(os.environ["KOTYAMBA_REPO_RASPBERRY"])

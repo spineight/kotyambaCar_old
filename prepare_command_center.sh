@@ -40,19 +40,7 @@ echo "##__Step 3__.## Adding env vars to ~/.bashrc"
 echo "Setting KOTYAMBA_REPO_COMMAND_CENTER to path to the repository"
 echo "export KOTYAMBA_REPO_COMMAND_CENTER=$(pwd)" >> ~/.bashrc
 echo "Check that this is correct KOTYAMBA_REPO_COMMAND_CENTER=$(pwd)"
+
+echo "##__Step 4__.## Adding scripts that will setup ROS nodes to ~/.bashrc"
+echo "source $KOTYAMBA_REPO_COMMAND_CENTER/setup_command_center_nodes.sh" >> ~/.bashrc
 source ~/.bashrc
-# read -p "Enter fullpath to kotyambaCar repo on RaspberryPI: " fullpath
-
-# export KOTYAMBA_REPO_RASPBERRY="$fullpath"
-# echo "KOTYAMBA_REPO_RASPBERRY was set to: $KOTYAMBA_REPO_RASPBERRY"
-# echo "check it! echo $KOTYAMBA_REPO_RASPBERRY"
-
-echo "Step 3. Using systemd service to set up scripts to be started on boot"
-echo "##### 3. Using system service to start scripts that setup ROS network vars"
-sudo cp setup_command_center_nodes.service /etc/systemd/system
-sudo systemctl daemon-reload
-# make service running on system boot:  
-sudo systemctl enable setup_command_center_nodes.service --now
-
-# check service status:  
-systemctl status setup_command_center_nodes.service

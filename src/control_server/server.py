@@ -1,5 +1,6 @@
 import os # os.system("cmd")
 import sys
+import subprocess
 # https://stackoverflow.com/questions/1054271/how-to-import-a-python-class-that-is-in-a-directory-above
 sys.path.append("{}/src/control_motors".format(os.environ["KOTYAMBA_REPO_RASPBERRY"].rstrip()))
 print "added paths to *.py files to PYTHON_PATH:"
@@ -146,6 +147,8 @@ if __name__ == "__main__":
   # car = Vehicle(SpeedControlMotor, SteerControlMotor)
 
   setup_distributed_ROS_environment()
+  print "starting roscore"
+  os.system("roscore &")
 
   app = make_app()
   
