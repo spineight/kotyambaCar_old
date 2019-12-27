@@ -9,12 +9,12 @@ echo "####################################################################"
 
 echo "Preparing command_center machine for kotyambaCar:"
 echo $KOTYAMBA_REPO_COMMAND_CENTER
-if [ "$KOTYAMBA_REPO_COMMAND_CENTER" != "" ]; then
-    echo "You already sourced prepare_command_center\n"
-    echo "This should be done only once on your machine.\n"
-    echo "Exiting"
-    return 1
-fi
+# if [ "$KOTYAMBA_REPO_COMMAND_CENTER" != "" ]; then
+#     echo "You already sourced prepare_command_center\n"
+#     echo "This should be done only once on your machine.\n"
+#     echo "Exiting"
+#     return 1
+# fi
 
 echo "##__Step 1.__## Installing required packages"
 sudo apt-get update -y
@@ -42,11 +42,11 @@ echo "export KOTYAMBA_REPO_COMMAND_CENTER=$(pwd)" >> ~/.bashrc
 echo "Check that this is correct KOTYAMBA_REPO_COMMAND_CENTER=$(pwd)"
 
 echo "Setting source to ROS system packages"
-read -p "Enter fullpath to your ROS system setup file. For ex.: /opt/ros/melodic/setup.bash" fullpath
+read -p "Enter fullpath to your ROS system setup file. For ex.: /opt/ros/melodic/setup.bash  " fullpath
 echo "source $fullpath" >> ~/.bashrc
 
 echo "Setting source to you ROS packages"
-echo "source $(pwd)/src/catkin-ws/devel/setup.bash
+echo "source $(pwd)/src/catkin-ws/devel/setup.bash" >> ~/.bashrc
 
 echo "##__Step 4__.## Adding scripts that will setup ROS nodes to ~/.bashrc"
 echo "source $(pwd)/setup_command_center_nodes.sh" >> ~/.bashrc
