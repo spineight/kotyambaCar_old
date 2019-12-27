@@ -8,16 +8,14 @@ print "added paths to *.py files to PYTHON_PATH:"
 print(sys.path)
 
 from motor_pwm import Motor
-from vehicle import Vehicle
+from vehicle import vehicle
 
 import rospy
 from kotyambaCar.msg import movement_command
     
 class Movement_node:
     def __init__(self):
-        SpeedControlMotor = Motor("/home/pi/kotyambaCar/src/control_motors/speed_motor.yaml")
-        SteerControlMotor = Motor("/home/pi/kotyambaCar/src/control_motors/steering_motor.yaml")
-        self.car = Vehicle(SpeedControlMotor, SteerControlMotor)
+        self.car = vehicle
         print "starting movement_node"
         rospy.init_node("movement_node") # removed ,anonymous=True to be able to kill it by name
         rospy.Subscriber("movement_command", movement_command, self.on_movement_command)

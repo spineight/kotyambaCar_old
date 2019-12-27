@@ -1,4 +1,4 @@
-directionPinFirst_GPIO_id : 9
-directionPinSecond_GPIO_id : 10
+directionPinFirst_GPIO_id : 10
+directionPinSecond_GPIO_id : 9
 speedPin_GPIO_id : 11
-pwm_frequency : 200
+pwm_frequency : 1

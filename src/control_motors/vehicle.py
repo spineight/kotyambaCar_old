@@ -3,6 +3,10 @@ import threading
 from threading import Thread
 from time import sleep
 
+from motor_pwm import Motor
+
+import os
+
 class Vehicle:
   ''' speed in 0..100% '''
   def __init__(self,speed_control_motor, steering_control_motor):
@@ -154,3 +158,8 @@ class Vehicle:
     cmdThread.daemon = True
     self.last_thread_name = cmdThread.getName()
     cmdThread.start()
+
+vehicle = Vehicle(
+  Motor("{}/src/control_motors/speed_motor.yaml".format(os.environ["KOTYAMBA_REPO_RASPBERRY"])), 
+  Motor("{}/src/control_motors/steering_motor.yaml".format(os.environ["KOTYAMBA_REPO_RASPBERRY"]))
+  )
