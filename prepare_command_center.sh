@@ -8,6 +8,13 @@ echo "####################################################################"
 
 
 echo "Preparing command_center machine for kotyambaCar:"
+echo $KOTYAMBA_REPO_COMMAND_CENTER
+if [ "$KOTYAMBA_REPO_COMMAND_CENTER" != "" ]; then
+    echo "You already sourced prepare_command_center\n"
+    echo "This should be done only once on your machine.\n"
+    echo "Exiting"
+    return 1
+fi
 
 echo "##__Step 1.__## Installing required packages"
 sudo apt-get update -y
@@ -31,9 +38,9 @@ sudo systemctl status ssh
 
 echo "##__Step 3__.## Adding env vars to ~/.bashrc"
 echo "Setting KOTYAMBA_REPO_COMMAND_CENTER to path to the repository"
-KOTYAMBA_REPO_COMMAND_CENTER="$(pwd)"
-echo "export KOTYAMBA_REPO_COMMAND_CENTER=$(KOTYAMBA_REPO_COMMAND_CENTER)"
-echo "Check that this is correct KOTYAMBA_REPO_COMMAND_CENTER=$(KOTYAMBA_REPO_COMMAND_CENTER)"
+echo "export KOTYAMBA_REPO_COMMAND_CENTER=$(pwd)" >> ~/.bashrc
+echo "Check that this is correct KOTYAMBA_REPO_COMMAND_CENTER=$(pwd)"
+source ~/.bashrc
 # read -p "Enter fullpath to kotyambaCar repo on RaspberryPI: " fullpath
 
 # export KOTYAMBA_REPO_RASPBERRY="$fullpath"
