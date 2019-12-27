@@ -7,8 +7,9 @@ def command_center():
 
     ## TODO Choosing a good queue_size:
     ## http://wiki.ros.org/rospy/Overview/Publishers%20and%20Subscribers
+    print "##ROS##\n. Starting command_center_node. Publishing to command_center_commands topic\n##ROS##"
     pub = rospy.Publisher('command_center_commands', movement_command, queue_size = 3)
-    rospy.init_node('command_center', anonymous=True)
+    rospy.init_node('command_center_node', anonymous=True)
 
     # http://wiki.ros.org/rospy/Overview/Time
     rateHz = 0.1
