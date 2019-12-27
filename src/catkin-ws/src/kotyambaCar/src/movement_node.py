@@ -25,16 +25,10 @@ class Movement_node:
         self.car.stop()
 
     def on_movement_command(self,cmd):
-        msg = "movement_command: speed_dc: {}, steer_dc: {}".format(cmd.speed_dc, cmd.steer_dc)
+        msg = "movement_command: direction: {}, steer_dc: {}".format(cmd.direction, cmd.speed)
         rospy.loginfo(msg)
         print msg
-        if(cmd.is_emergency_stop):
-            print "emergency_stop"
-            self.car.hardBreak_()
-        elif(cmd.speed_dc > 0):
-            self.car.moveForward_(cmd.speed_dc, cmd.steer_dc)
-        elif(cmd.speed_dc <0):
-            self.car.moveBackward_(abs(cmd.speed_dc), cmd.steer_dc)
+        self.car.on_movement_command(cmd.direction, cmd.speed)
 
 if __name__ == '__main__':
     try:

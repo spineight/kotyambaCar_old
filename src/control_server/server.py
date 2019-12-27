@@ -69,7 +69,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
       message_list = message.split()
       msg_type = message_list[0]
       if(msg_type in "control_command"):
-        self.on_movement_command(message_list[1:])
+        self.on_controller_pressed(message_list[1:])
       elif(msg_type in "mode_command"):
         self.on_mode_command(message_list[1])
       elif (msg_type in "status_info"):
@@ -78,22 +78,33 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     except Exception as e:
       print str(e)
 
-  def on_movement_command(self, cmd):
+  def on_controller_pressed(self, cmd):
     xOffset, yOffset, viewWidth, viewHeight, slider_value = map(float, cmd)
     print "xOffset: {0}; yOffset {1}".format(xOffset, yOffset) 
     assert(viewWidth == viewHeight)
     circleRadius = viewWidth / 2. # we expect that viewWidth == viewHeight
 
-    steer_dc = xOffset / circleRadius * 100. # 0 <= steer_dc <= 100
-    speed_dc = yOffset / circleRadius * 100. # 0 <= speed_dc <= 100
+    steering_offset_power = xOffset / circleRadius * 100. # 0 <= steer_dc <= 100
+    speed_offset_power = yOffset / circleRadius * 100. # 0 <= speed_dc <= 100
     ## move car
-    print "setting steer_dc:{} speed_dc:{}".format(steer_dc,speed_dc)
+    print "steering_offset_power:{} speed_offset_power:{}".format(steering_offset_power,speed_offset_power)
     msg = movement_command()
-    msg.speed_dc = speed_dc
-    msg.steer_dc = steer_dc
-    msg.is_emergency_stop = False
-    if(abs(speed_dc) < 30 and abs(steer_dc) < 30):
-      msg.is_emergency_stop = True
+    if(0 < steering_offset_power <= 30):
+      msg.direction = "straight"
+    elif( steering_offset_power <= -60):
+      msg.direction = "left_large"
+    elif( steering_offset_power <= -30):
+      msg.direction = "left_medium"
+    elif( steering_offset_power <= 60):
+      msg.direction = "right_medium" 
+    elif( steering_offset_power <= 100):
+      msg.direction = "right_large" 
+
+    if(abs(speed_offset_power) <= 10 and abs(steering_offset_power) <= 10):
+      msg.direction = "emergency_stop"
+    else:
+      msg.speed = speed_offset_power
+
     self.movement_cmd_publisher.publish(msg)
   
   def on_mode_command(self, mode):
