@@ -31,6 +31,7 @@ echo "##__Step 2__.## Adding env vars to ~/.bashrc"
 echo "Setting KOTYAMBA_REPO_RASPBERRY to path to the repository"
 echo "export KOTYAMBA_REPO_RASPBERRY=$(pwd)" >> ~/.bashrc
 echo "Check that this is correct KOTYAMBA_REPO_RASPBERRY=$(pwd)"
+echo "source $(pwd)/prepare_raspberry_pi.sh" >> ~/.bashrc
 source ~/.bashrc
 
 echo "##__Step 3__.## Using systemd to setup starting of Tornado web server on boot ####"

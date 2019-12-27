@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source ~/.bashrc
-
 echo "SETTING UP Master Node IP"
 export ROS_MASTER_IP="$(getent ahosts raspberrypi.local | awk 'NR==1{ print $1 }')"
 if [ "$ROS_MASTER_IP" == "" ]; then
