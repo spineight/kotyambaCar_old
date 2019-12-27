@@ -41,6 +41,13 @@ echo "Setting KOTYAMBA_REPO_COMMAND_CENTER to path to the repository"
 echo "export KOTYAMBA_REPO_COMMAND_CENTER=$(pwd)" >> ~/.bashrc
 echo "Check that this is correct KOTYAMBA_REPO_COMMAND_CENTER=$(pwd)"
 
+echo "Setting source to ROS system packages"
+read -p "Enter fullpath to your ROS system setup file. For ex.: /opt/ros/melodic/setup.bash" fullpath
+echo "source $fullpath" >> ~/.bashrc
+
+echo "Setting source to you ROS packages"
+echo "source $(pwd)/src/catkin-ws/devel/setup.bash
+
 echo "##__Step 4__.## Adding scripts that will setup ROS nodes to ~/.bashrc"
-echo "source $KOTYAMBA_REPO_COMMAND_CENTER/setup_command_center_nodes.sh" >> ~/.bashrc
+echo "source $(pwd)/setup_command_center_nodes.sh" >> ~/.bashrc
 source ~/.bashrc

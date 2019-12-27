@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-source /opt/ros/melodic/setup.bash
-KOTYAMBA_REPO_COMMAND_CENTER=$(pwd)
-source $KOTYAMBA_REPO_COMMAND_CENTER/src/catkin-ws/devel/setup.bash
+source ~/.bashrc
 
 echo "SETTING UP Master Node IP"
 export ROS_MASTER_IP="$(getent ahosts raspberrypi.local | awk 'NR==1{ print $1 }')"
