@@ -8,11 +8,7 @@ from motor_pwm import Motor
 import os
 
 class Vehicle:
-  ''' speed in 0..100% '''
-  def __init__(self,speed_control_motor, steering_control_motor):
-    self.speed_control_motor = speed_control_motor
-    self.steering_control_motor = steering_control_motor
-    self.cv = threading.Condition()
+
 
   def moveForward_(self, speed_dc, steer_dc):
     '''
@@ -159,7 +155,92 @@ class Vehicle:
     self.last_thread_name = cmdThread.getName()
     cmdThread.start()
 
-vehicle = Vehicle(
-  Motor("{}/src/control_motors/speed_motor.yaml".format(os.environ["KOTYAMBA_REPO_RASPBERRY"])), 
-  Motor("{}/src/control_motors/steering_motor.yaml".format(os.environ["KOTYAMBA_REPO_RASPBERRY"]))
-  )
+
+  def __init__(self,speed_control_motor, steering_control_motor):
+    self.speed_control_motor = speed_control_motor
+    self.steering_control_motor = steering_control_motor
+
+    self.steering_condition_variable = threading.Condition()
+    self.speed_condition_variable = threading.Condition()
+
+    self.steering_dc = 0
+    self.speed_dc = 0
+
+    self.is_engines_on = False
+  
+  def steering_thread(self):
+    while (self.is_engines_on):
+      try:
+        if(self.steering_dc >= 0):
+          self.steering_control_motor.rotate(self.steering_dc,False) # right
+        else:
+          self.steering_control_motor.rotate(abs(self.steering_dc),True) # left
+        self.steering_condition_variable.acquire()
+        self.steering_condition_variable.wait()
+        self.steering_condition_variable.release()
+      except Exception as e:
+        print "steering_thread"
+        print str(e)
+
+  def speed_thread(self):
+    while (self.is_engines_on):
+      try:
+        if(self.speed_dc >= 0):
+          self.speed_control_motor.rotate(self.speed_dc,False) # right
+        else:
+          self.speed_control_motor.rotate(abs(self.speed_dc),True) # left
+        self.speed_condition_variable.acquire()
+        self.speed_condition_variable.wait()
+        self.speed_condition_variable.release()
+      except Exception as e:
+        print "speed_thread"
+        print str(e)
+
+  def start_engines(self):
+    self.is_engines_on = True
+    steering_thread = threading.Thread(target=self.steering_thread)
+    steering_thread.daemon = True
+    speed_thread = threading.Thread(target=self.speed_thread)
+    speed_thread.daemon = True
+    steering_thread.start()
+    speed_thread.start()
+
+  def stop_engines(self):
+    self.is_engines_on = False
+    
+    self.steering_condition_variable.acquire()
+    self.steering_condition_variable.notifyAll()
+    self.steering_condition_variable.release()
+
+    self.speed_condition_variable.acquire()
+    self.speed_condition_variable.notifyAll()
+    self.speed_condition_variable.release()
+  
+  def on_speed_change(self, speed_dc_change):
+    self.speed_dc = self.speed_dc + speed_dc_change
+    print "self.speed_dc:{}".format(self.speed_dc)
+    self.speed_condition_variable.acquire()
+    self.speed_condition_variable.notifyAll()
+    self.speed_condition_variable.release()
+
+  def on_steering_change(self, steering_dc_change):
+    # TODO
+    steering_step = 5
+    if (steering_dc_change >=0):
+      self.steering_dc = min(steering_step, self.steering_dc + steering_step)
+
+    elif (steering_dc_change < 0):
+      self.steering_dc = max(-steering_step, self.steering_dc - steering_step)
+
+    print "self.steering_dc:{}".format(self.steering_dc)
+    self.steering_condition_variable.acquire()
+    self.steering_condition_variable.notifyAll()
+    self.steering_condition_variable.release()
+
+
+  def on_stop(self):
+    self.stop_engines()
+# vehicle = Vehicle(
+#   Motor("{}/src/control_motors/speed_motor.yaml".format(os.environ["KOTYAMBA_REPO_RASPBERRY"])), 
+#   Motor("{}/src/control_motors/steering_motor.yaml".format(os.environ["KOTYAMBA_REPO_RASPBERRY"]))
+#   )

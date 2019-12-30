@@ -7,7 +7,6 @@
  - http://commandcenter.local:8080 -->
 
 <launch>
-  <include file="$(find kotyambaCar)/launch/video_server.launch"/>
   <machine name="raspberry_pi" address="raspberrypi.local" 
     user="pi" password="321" 
     env-loader="$(env KOTYAMBA_REPO_RASPBERRY)/setup_raspberry_pi_nodes.sh" >
@@ -28,5 +27,5 @@
   </node>
 
   <node name="movement_node" pkg="kotyambaCar" type="movement_node.py"  machine="raspberry_pi" />
- 
+  <include file="$(find kotyambaCar)/launch/video_server.launch" />
 </launch>
