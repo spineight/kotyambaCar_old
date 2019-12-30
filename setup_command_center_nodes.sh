@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-source ~/.bashrc
-
+source /opt/ros/melodic/setup.bash
+source /home/oleg/dev/kotyambaCar/src/catkin-ws/devel/setup.bash
+export ROSLAUNCH_SSH_UNKNOWN=1
 echo "SETTING UP Master Node IP"
 export ROS_MASTER_IP="$(getent ahosts raspberrypi.local | awk 'NR==1{ print $1 }')"
 if [ "$ROS_MASTER_IP" == "" ]; then
