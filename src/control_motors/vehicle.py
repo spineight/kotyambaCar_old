@@ -224,7 +224,14 @@ class Vehicle:
     self.speed_condition_variable.release()
 
   def on_steering_change(self, steering_dc_change):
-    self.steering_dc = self.steering_dc + steering_dc_change
+    # TODO
+    steering_step = 5
+    if (steering_dc_change >=0):
+      self.steering_dc = min(steering_step, self.steering_dc + steering_step)
+
+    elif (steering_dc_change < 0):
+      self.steering_dc = max(-steering_step, self.steering_dc - steering_step)
+
     print "self.steering_dc:{}".format(self.steering_dc)
     self.steering_condition_variable.acquire()
     self.steering_condition_variable.notifyAll()

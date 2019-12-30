@@ -13,6 +13,9 @@ def main():
   print "Manual mode\n Used for understanding vechicle dynamics" 
   print "By providing different commands for precise movement you understand how vechicle behaves"
 
+  # TODO move to yaml file
+  speed_dc_step = 10
+  steering_dc_step = 5
   try:
     while(True):
       cmdStr = raw_input("---->")
@@ -20,13 +23,13 @@ def main():
         car.on_stop()
         break
       elif(cmdStr in "w"):
-        car.on_speed_change(10)
+        car.on_speed_change(speed_dc_step)
       elif(cmdStr in "s"):
-        car.on_speed_change(-10)
+        car.on_speed_change(-speed_dc_step)
       elif(cmdStr in "a"):
-        car.on_steering_change(-10)
+        car.on_steering_change(-steering_dc_step)
       elif(cmdStr in "d"):
-        car.on_steering_change(10)
+        car.on_steering_change(steering_dc_step)
         
       
   except KeyboardInterrupt as e: 
