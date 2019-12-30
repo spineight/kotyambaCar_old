@@ -171,10 +171,10 @@ class Vehicle:
   def steering_thread(self):
     while (self.is_engines_on):
       try:
-        if(this.steering_dc >= 0):
-          self.steering_control_motor.rotate(this.steering_dc,False) # right
+        if(self.steering_dc >= 0):
+          self.steering_control_motor.rotate(self.steering_dc,False) # right
         else:
-          self.steering_control_motor.rotate(this.steering_dc,True) # left
+          self.steering_control_motor.rotate(abs(self.steering_dc),True) # left
         self.steering_condition_variable.acquire()
         self.steering_condition_variable.wait()
         self.steering_condition_variable.release()
@@ -185,10 +185,10 @@ class Vehicle:
   def speed_thread(self):
     while (self.is_engines_on):
       try:
-        if(this.speed_dc >= 0):
-          self.steering_control_motor.rotate(this.speed_dc,False) # right
+        if(self.speed_dc >= 0):
+          self.speed_control_motor.rotate(self.speed_dc,False) # right
         else:
-          self.steering_control_motor.rotate(this.speed_dc,True) # left
+          self.speed_control_motor.rotate(abs(self.speed_dc),True) # left
         self.speed_condition_variable.acquire()
         self.speed_condition_variable.wait()
         self.speed_condition_variable.release()
@@ -202,6 +202,8 @@ class Vehicle:
     steering_thread.daemon = True
     speed_thread = threading.Thread(target=self.speed_thread)
     speed_thread.daemon = True
+    steering_thread.start()
+    speed_thread.start()
 
   def stop_engines(self):
     self.is_engines_on = False
@@ -217,10 +219,17 @@ class Vehicle:
   def on_speed_change(self, speed_dc_change):
     self.speed_dc = self.speed_dc + speed_dc_change
     print "self.speed_dc:{}".format(self.speed_dc)
+    self.speed_condition_variable.acquire()
+    self.speed_condition_variable.notifyAll()
+    self.speed_condition_variable.release()
 
   def on_steering_change(self, steering_dc_change):
     self.steering_dc = self.steering_dc + steering_dc_change
     print "self.steering_dc:{}".format(self.steering_dc)
+    self.steering_condition_variable.acquire()
+    self.steering_condition_variable.notifyAll()
+    self.steering_condition_variable.release()
+
 
   def on_stop(self):
     self.stop_engines()
