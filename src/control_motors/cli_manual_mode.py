@@ -14,12 +14,12 @@ def main():
   print "By providing different commands for precise movement you understand how vechicle behaves"
 
   # TODO move to yaml file
-  speed_dc_step = 10
+  speed_dc_step = 100
   steering_dc_step = 5
   try:
     while(True):
       cmdStr = raw_input("---->")
-      if(cmdStr in "e"):
+      if(cmdStr in "q"):
         car.on_stop()
         break
       elif(cmdStr in "w"):
@@ -30,6 +30,9 @@ def main():
         car.on_steering_change(-steering_dc_step)
       elif(cmdStr in "d"):
         car.on_steering_change(steering_dc_step)
+      elif(cmdStr in "e"):
+        car.on_steering_change(0)
+        car.on_speed_change(0)
         
       
   except KeyboardInterrupt as e: 
