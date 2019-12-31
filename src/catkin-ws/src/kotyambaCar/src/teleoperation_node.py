@@ -12,17 +12,20 @@ from sensor_msgs.msg import Joy
 # axis 0 aka left stick horizonal controls angular speed
 class Teleoperation_node:
     def __init__(self):
+        rospy.init_node('Joy2Kotyamba')
         # publishing to "turtle1/cmd_vel" to control turtle1
-        self.publisher = rospy.Publisher('turtle1/cmd_vel', Twist)
+        self.publisher = rospy.Publisher('kotyamba/cmd_vel', Twist)
         # subscribed to joystick inputs on topic "joy"
         rospy.Subscriber("joy", Joy, self.on_joy_data)
+        print "init"
 
-        rospy.init_node('Joy2Kotyamba')
+
         rospy.spin()
     def on_joy_data(self, data):
         twist = Twist()
         # Up/Down Axis stick left (data.axes[1])
         twist.linear.x = data.axes[1]
+        print "twist.linear.x {}".format(twist.linear.x)
         
         # Left/Right Axis stick right (data.axes[2])
         twist.angular.z = data.axes[2]
