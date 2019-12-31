@@ -9,7 +9,6 @@ import os
 
 class Vehicle:
 
-
   def moveForward_(self, speed_dc, steer_dc):
     '''
       if steer_dc > 0 - move right, else - left 
@@ -80,7 +79,7 @@ class Vehicle:
     self.steering_control_motor.emergency_stop()
     self.stopAnotherCommands()
 
-  ## for more precise control 
+  # for more precise control 
   def moveForwardPrecise(self, speed_dc, steer_dc, active_time_sec):
     '''
       use this methods for understanding vehicle dynamics
@@ -175,6 +174,7 @@ class Vehicle:
           self.steering_control_motor.rotate(self.steering_dc,False) # right
         else:
           self.steering_control_motor.rotate(abs(self.steering_dc),True) # left
+        self.steering_dc = 0
         self.steering_condition_variable.acquire()
         self.steering_condition_variable.wait()
         self.steering_condition_variable.release()
@@ -189,6 +189,7 @@ class Vehicle:
           self.speed_control_motor.rotate(self.speed_dc,False) # right
         else:
           self.speed_control_motor.rotate(abs(self.speed_dc),True) # left
+        # self.speed_dc = 0
         self.speed_condition_variable.acquire()
         self.speed_condition_variable.wait()
         self.speed_condition_variable.release()
@@ -216,22 +217,15 @@ class Vehicle:
     self.speed_condition_variable.notifyAll()
     self.speed_condition_variable.release()
   
-  def on_speed_change(self, speed_dc_change):
-    self.speed_dc = self.speed_dc + speed_dc_change
+  def on_speed_change(self, speed_dc):
+    self.speed_dc = min (speed_dc,100)
     print "self.speed_dc:{}".format(self.speed_dc)
     self.speed_condition_variable.acquire()
     self.speed_condition_variable.notifyAll()
     self.speed_condition_variable.release()
 
-  def on_steering_change(self, steering_dc_change):
-    # TODO
-    steering_step = 5
-    if (steering_dc_change >=0):
-      self.steering_dc = min(steering_step, self.steering_dc + steering_step)
-
-    elif (steering_dc_change < 0):
-      self.steering_dc = max(-steering_step, self.steering_dc - steering_step)
-
+  def on_steering_change(self, steering_dc):
+    self.steering_dc = min(steering_dc,100)
     print "self.steering_dc:{}".format(self.steering_dc)
     self.steering_condition_variable.acquire()
     self.steering_condition_variable.notifyAll()
