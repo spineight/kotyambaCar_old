@@ -18,6 +18,7 @@ class Vehicle_movement_node:
         SpeedControlMotor = Motor(7,8,1,100)
         SteerControlMotor = Motor(10,9,11,2)
         self.car = Vehicle(SpeedControlMotor, SteerControlMotor)
+        self.car.start_engines()
         print "##ROS##\n. Starting movement_node. Subscribed to movement_command topic\n##ROS##"
         rospy.init_node("Vehicle_movement_node") # removed ,anonymous=True to be able to kill it by name
         rospy.Subscriber("kotyamba/cmd_vel", Twist, self.on_twist_command)
@@ -34,20 +35,21 @@ class Vehicle_movement_node:
 
         rospy.loginfo(twist)
         print twist
-        if(twist.linear.x == 0 and twist.angular.z == 0):
-            car.on_stop()
-        break
-        elif(twist.linear.x > 0):
-            car.on_speed_change(speed_dc_step)
+        # if(twist.linear.x == 0 and twist.angular.z == 0):
+        #     self.car.on_stop()
+        speed_dc_step = 10
+        steering_dc_step = 5
+        if(twist.linear.x > 0):
+            self.car.on_speed_change(speed_dc_step)
         elif(twist.linear.x < 0):
-            car.on_speed_change(-speed_dc_step)
+            self.car.on_speed_change(-speed_dc_step)
         elif(twist.angular.z < 0):
-            car.on_steering_change(-steering_dc_step)
+            self.car.on_steering_change(-steering_dc_step)
         elif(twist.angular.z > 0):
-            car.on_steering_change(steering_dc_step)
+            self.car.on_steering_change(steering_dc_step)
 
 if __name__ == '__main__':
     try:
-        listener = Movement_node()
+        listener = Vehicle_movement_node()
     except rospy.ROSInterruptException:
         print "Command listener was interrupted"
