@@ -13,7 +13,7 @@ from sensor_msgs.msg import Joy
 class Teleoperation_node:
     def __init__(self):
         # publishing to "turtle1/cmd_vel" to control turtle1
-        self.publisher = rospy.Publisher('turtle1/cmd_vel', Twist)
+        self.publisher = rospy.Publisher('kotyamba/cmd_vel', Twist)
         # subscribed to joystick inputs on topic "joy"
         rospy.Subscriber("joy", Joy, self.on_joy_data)
 
@@ -26,6 +26,12 @@ class Teleoperation_node:
         
         # Left/Right Axis stick right (data.axes[2])
         twist.angular.z = data.axes[2]
+        
+        stop_button = buttons[0]
+        if stop_button == 1:
+            twist.linear.x = 0
+            twist.angular.z = 0
+
         self.publisher.publish(twist)
 
 # rosrun turtlesim turtlesim_node

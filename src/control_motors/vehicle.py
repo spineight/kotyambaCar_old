@@ -9,7 +9,6 @@ import os
 
 class Vehicle:
 
-
   def moveForward_(self, speed_dc, steer_dc):
     '''
       if steer_dc > 0 - move right, else - left 
