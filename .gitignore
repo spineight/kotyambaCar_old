@@ -106,6 +106,8 @@ venv.bak/
 
 # Visual studio code
 *.code-workspace
+*.vscode
+
 
 # reactNativeController
 # we only need App.js, all other files will be downloaded/generated

@@ -4,31 +4,37 @@ from motor_pwm import Motor
 from vehicle import Vehicle
 
 def main():
-  SpeedControlMotor = Motor(7,8,1)
-  SteerControlMotor = Motor(9,10,11)
+  SpeedControlMotor = Motor(7,8,1,100)
+  SteerControlMotor = Motor(10,9,11,2)
   car = Vehicle(SpeedControlMotor, SteerControlMotor)
+
+  car.start_engines()
 
   print "Manual mode\n Used for understanding vechicle dynamics" 
   print "By providing different commands for precise movement you understand how vechicle behaves"
 
+  # TODO move to yaml file
+  speed_dc_step = 100
+  steering_dc_step = 5
   try:
     while(True):
-      print "Cmd format:****** %SPEED,%STEER,TIME_SEC******"
-      print "speed in [-100..100] backward..forward"
-      print "steer in [-100..100] left..right"
-      print "\n\n\nFor ex.: '80,90,3' - move forward 80% of max power, right 90% of max power for 3 seconds"
-      print "\n\n\n for exit: 'e'"
       cmdStr = raw_input("---->")
-      if(cmdStr in "e"):
-        car.stop()
+      if(cmdStr in "q"):
+        car.on_stop()
         break
-
-      speed_dc, steer_dc, active_time = (float(v) for v in cmdStr.split(','))
-
-      if(speed_dc >= 0):
-        car.moveForwardAsync(speed_dc, steer_dc, active_time)
-      else:
-        car.moveBackwardAsync(abs(speed_dc), steer_dc, active_time)
+      elif(cmdStr in "w"):
+        car.on_speed_change(speed_dc_step)
+      elif(cmdStr in "s"):
+        car.on_speed_change(-speed_dc_step)
+      elif(cmdStr in "a"):
+        car.on_steering_change(-steering_dc_step)
+      elif(cmdStr in "d"):
+        car.on_steering_change(steering_dc_step)
+      elif(cmdStr in "e"):
+        car.on_steering_change(0)
+        car.on_speed_change(0)
+        
+      
   except KeyboardInterrupt as e: 
     print (str(e))
   except Exception as e:

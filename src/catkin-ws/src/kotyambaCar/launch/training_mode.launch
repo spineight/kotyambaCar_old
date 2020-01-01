@@ -1,0 +1,31 @@
+ <!-- usb cam is runnin on Rpi, to reduce load on Rpi instead of motion package running on it,
+ web_video_server was added, that is running on command_center and listening to the compressed_image,
+ so in the client in the same network you can do in web browser: -->
+
+ <!-- commands to try in the browser:
+ - http://commandcenter.local:8080/stream?topic=/usb_cam/image_raw&type=ros_compressed
+ - http://commandcenter.local:8080 -->
+
+<launch>
+  <machine name="raspberry_pi" address="raspberrypi.local" 
+    user="pi" password="321" 
+    env-loader="$(env KOTYAMBA_REPO_RASPBERRY)/setup_raspberry_pi_nodes.sh" >
+  </machine>
+
+  <machine name="command_center" address="commandCenter.local" 
+    user="oleg" password="321" 
+    env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/setup_command_center_nodes.sh">
+  </machine>
+
+  <node name="usb_cam" pkg="usb_cam" type="usb_cam_node"  machine="raspberry_pi" >
+    <param name="video_device" value="/dev/video0" />
+    <param name="image_width" value="320" />
+    <param name="image_height" value="240" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+  </node>
+
+  <node name="movement_node" pkg="kotyambaCar" type="movement_node.py"  machine="raspberry_pi" />
+  <include file="$(find kotyambaCar)/launch/video_server.launch" />
+</launch>

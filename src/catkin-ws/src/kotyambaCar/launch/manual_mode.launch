@@ -1,0 +1,9 @@
+ <launch>
+  <machine name="raspberry_pi" address="raspberrypi.local" 
+    user="pi" password="321" 
+    env-loader="$(env KOTYAMBA_REPO_RASPBERRY)/setup_raspberry_pi_nodes.sh" >
+  </machine>
+
+  <node name="movement_node" pkg="kotyambaCar" type="movement_node.py"  machine="raspberry_pi" />
+
+</launch>

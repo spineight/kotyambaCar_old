@@ -1,0 +1,19 @@
+ <!-- command center should be available, as we are going to run web_video_server on it -->
+ 
+ <!-- usb cam is runnin on Rpi, to reduce load on Rpi instead of motion package running on it,
+ web_video_server was added, that is running on command_center and listening to the compressed_image,
+ so in the client in the same network you can do in web browser: -->
+
+ <!-- commands to try in the browser:
+ - http://commandcenter.local:8080/stream?topic=/usb_cam/image_raw&type=ros_compressed
+ - http://commandcenter.local:8080 -->
+ 
+<launch>
+
+  <machine name="command_center" address="commandCenter.local" 
+    user="oleg" password="321" 
+    env-loader="$(env KOTYAMBA_REPO_COMMAND_CENTER)/setup_command_center_nodes.sh">
+  </machine>
+
+  <node name="web_video_server" pkg="web_video_server" type="web_video_server" machine="command_center" />
+</launch>

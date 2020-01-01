@@ -1,4 +1,0 @@
-<launch>
-  <include file="$(find kotyambaCar)/launch/master.launch" />
-  <include file="$(find kotyambaCar)/launch/slave.launch" />
-</launch>

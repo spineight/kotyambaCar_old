@@ -1,13 +1,32 @@
 #!/usr/bin/python
 
 import RPi.GPIO as GPIO
+import yaml
 
 class Motor:
   ''' do not use the start() and stop() methods in a loop, 
       use the ChangeDutyCycle() method instead to set the duty cycle to zero to stop PWM 
       https://raspberrypi.stackexchange.com/questions/68386/pwm-stop-respond-after-hundreds-of-start-stop
   '''
-  def __init__(self, directionPinFirst_GPIO_id, directionPinSecond_GPIO_id, speedPin_GPIO_id):
+  def __init__(self, *args, **kwargs):
+    if len(args) == 1:
+      self.init_from_config_file(args[0])
+    elif len(args) == 4:
+      self.init_with_values(args[0], args[1], args[2], args[3])
+
+  def init_from_config_file(self, path_to_config_file):
+    try:
+      with open(path_to_config_file) as config_file:
+        print "using {} for motor configuration".format(path_to_config_file)
+        # The FullLoader parameter handles the conversion from YAML
+        # scalar values to Python the dictionary format
+        params = yaml.load(config_file, Loader=yaml.FullLoader)
+        self.init_with_values(params["directionPinFirst_GPIO_id"], params["directionPinSecond_GPIO_id"], params["speedPin_GPIO_id"], params["pwm_frequency"])
+    except IOError as e:
+      print "config file {} not available".format(path_to_config_file)
+      print e
+
+  def init_with_values(self, directionPinFirst_GPIO_id, directionPinSecond_GPIO_id, speedPin_GPIO_id, pwm_frequency):
     ''' if signal on pins:  
         directionPinFirst_GPIO_id - TRUE, directionPinSecond_GPIO_id - FALSE - motor rotates in one direction
         directionPinFirst_GPIO_id - FALSE, directionPinSecond_GPIO_id - TRUE - rotates in oposite direction
@@ -27,8 +46,7 @@ class Motor:
     self.first_gpio_id = directionPinFirst_GPIO_id
     self.second_gpio_id = directionPinSecond_GPIO_id
 
-    recommendedFreq = 100
-    self.speedPWM = GPIO.PWM(speedPin_GPIO_id, recommendedFreq)
+    self.speedPWM = GPIO.PWM(speedPin_GPIO_id, pwm_frequency)
     self.speedPWM.start(0)
 
   def __del__(self):
@@ -36,6 +54,7 @@ class Motor:
         see this: 
         https://raspi.tv/2013/rpi-gpio-basics-3-how-to-exit-gpio-programs-cleanly-avoid-warnings-and-protect-your-pi 
     '''
+    print "Doing GPIO.cleanup() in motor destructor"
     GPIO.cleanup()
 
 
@@ -63,8 +82,10 @@ class Motor:
         for refs: https://sourceforge.net/p/raspberry-gpio-python/wiki/PWM/
     '''
     # enable forward rotation on motor
-    GPIO.output(self.first_gpio_id, isForward)
-    GPIO.output(self.second_gpio_id,not isForward)
+    GPIO.output(self.first_gpio_id, GPIO.HIGH if isForward else GPIO.LOW)
+    GPIO.output(self.second_gpio_id, GPIO.LOW if isForward else GPIO.HIGH)
 
     # rotation speed
     self.speedPWM.ChangeDutyCycle(dutyCycle)
+    #self.speedPWM.start(dutyCycle)
+
