@@ -82,8 +82,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
   def on_controller_pressed(self, cmd):
     x_normalized, y_normalized = map(float, cmd)
     print "x_normalized: {0}; y_normalized {1}".format(x_normalized, y_normalized) 
-    assert(viewWidth == viewHeight)
-    circleRadius = viewWidth / 2. # we expect that viewWidth == viewHeight
 
     twist = Twist()
     # Up/Down Axis
