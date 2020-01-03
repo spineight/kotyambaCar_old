@@ -7,7 +7,7 @@ print "added paths to *.py files to PYTHON_PATH:"
 print(sys.path)
 
 import rospy
-from kotyambaCar.msg import movement_command
+from geometry_msgs.msg import Twist
 
 from network_status import get_command_center_ip
 from environment import setup_distributed_ROS_environment
@@ -40,8 +40,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     print "initializing {}".format(self.__class__.__name__)
     # self.car = car
     self.driving_modes_manager = DrivingModesManager()
-    self.movement_cmd_publisher = rospy.Publisher('movement_command', movement_command)
-    rospy.init_node('server_node')
+    rospy.init_node('commands_listener_node')
+    self.twist_cmd_publisher = rospy.Publisher('kotyamba/cmd_vel', Twist)
+    
   
   # overridden
   # Invoked when a new WebSocket is opened.
@@ -79,33 +80,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
       print str(e)
 
   def on_controller_pressed(self, cmd):
-    xOffset, yOffset, viewWidth, viewHeight, slider_value = map(float, cmd)
-    print "xOffset: {0}; yOffset {1}".format(xOffset, yOffset) 
+    x_normalized, y_normalized = map(float, cmd)
+    print "x_normalized: {0}; y_normalized {1}".format(x_normalized, y_normalized) 
     assert(viewWidth == viewHeight)
     circleRadius = viewWidth / 2. # we expect that viewWidth == viewHeight
 
-    steering_offset_power = xOffset / circleRadius * 100. # 0 <= steer_dc <= 100
-    speed_offset_power = yOffset / circleRadius * 100. # 0 <= speed_dc <= 100
-    ## move car
-    print "steering_offset_power:{} speed_offset_power:{}".format(steering_offset_power,speed_offset_power)
-    msg = movement_command()
-    if(0 < steering_offset_power <= 30):
-      msg.direction = "straight"
-    elif( steering_offset_power <= -60):
-      msg.direction = "left_large"
-    elif( steering_offset_power <= -30):
-      msg.direction = "left_medium"
-    elif( steering_offset_power <= 60):
-      msg.direction = "right_medium" 
-    elif( steering_offset_power <= 100):
-      msg.direction = "right_large" 
-
-    if(abs(speed_offset_power) <= 10 and abs(steering_offset_power) <= 10):
-      msg.direction = "emergency_stop"
-    else:
-      msg.speed = speed_offset_power
-
-    self.movement_cmd_publisher.publish(msg)
+    twist = Twist()
+    # Up/Down Axis
+    twist.linear.x = x_normalized
+    # Left/Right Axis
+    twist.angular.z = y_normalized
+    self.twist_cmd_publisher.publish(twist)
   
   def on_mode_command(self, mode):
     if(mode in "manual"):
@@ -152,10 +137,6 @@ def make_app():
  
 if __name__ == "__main__":
   tornado.options.parse_command_line()
-
-  # SpeedControlMotor = Motor("../control_motors/speed_motor.yaml")
-  # SteerControlMotor = Motor("../control_motors/steering_motor.yaml")
-  # car = Vehicle(SpeedControlMotor, SteerControlMotor)
 
   setup_distributed_ROS_environment()
   print "starting roscore"
