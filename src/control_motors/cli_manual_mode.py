@@ -4,8 +4,8 @@ from motor_pwm import Motor
 from vehicle import Vehicle
 
 def main():
-  SpeedControlMotor = Motor(7,8,1,100)
-  SteerControlMotor = Motor(10,9,11,2)
+  SpeedControlMotor = Motor(8,7,1,100)
+  SteerControlMotor = Motor(9,10,11,2)
   car = Vehicle(SpeedControlMotor, SteerControlMotor)
 
   car.start_engines()

@@ -85,9 +85,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
     twist = Twist()
     # Up/Down Axis
-    twist.linear.x = x_normalized
+    twist.linear.x = y_normalized
     # Left/Right Axis
-    twist.angular.z = y_normalized
+    twist.angular.z = -x_normalized
     self.twist_cmd_publisher.publish(twist)
   
   def on_mode_command(self, mode):
