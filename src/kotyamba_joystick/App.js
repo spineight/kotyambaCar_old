@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Slider from "react-native-slider";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -14,7 +13,6 @@ export default class App extends Component {
     super();
     this.state = {
       is_socket_open: false,
-      slider_value: 1,
     };
     this.socket = new WebSocket('ws://raspberrypi.local:8085/websocket');
     this.socket.onopen = () => {
@@ -31,7 +29,16 @@ export default class App extends Component {
     let xOffset = event.nativeEvent.locationX - this.state.circleCenterX;
     // use "-" to reverse Y axis
     let yOffset = -(event.nativeEvent.locationY - this.state.circleCenterY);
-    msg_to_send = `control_command ${xOffset} ${yOffset} ${this.state.ViewWidth} ${this.state.ViewHeight} ${this.state.slider_value}`
+    x_normalized = xOffset / (this.state.ViewWidth * 2.)
+    y_normalized = yOffset / (this.state.ViewHeight * 2.)
+    const msg_to_send = `control_command ${x_normalized} ${y_normalized}`
+    console.log(msg_to_send);
+    console.log(event.nativeEvent)
+    if(this.state.is_socket_open)
+      this.socket.send(msg_to_send);
+  }
+  onCircleRelease(event) {
+    const msg_to_send = `control_command 0 0`
     console.log(msg_to_send);
     console.log(event.nativeEvent)
     if(this.state.is_socket_open)
@@ -68,7 +75,8 @@ export default class App extends Component {
       this.socket.send("mode_command autonomous");
   }
 
-
+  // https://facebook.github.io/react-native/docs/touchablewithoutfeedback
+  // ctrl click on TouchableOpacity to get src code, and observe onPressOut
   render() {
     return (
       <View style={styles.container}>
@@ -77,6 +85,7 @@ export default class App extends Component {
             style={this.state.is_socket_open ? styles.circleEnabled : styles.circleDisabled}
             onPress={(event) => this.onCirclePress(event)}
             onLayout={(event) => this.onLayout(event)}
+            onPressOut={(event) => this.onCircleRelease(event)}
           >
           </TouchableOpacity>
         </View>
@@ -100,20 +109,6 @@ export default class App extends Component {
           style={styles.button}
           />
         </View>
-        <View style = {styles.slider}>
-          <Slider
-            value={this.state.slider_value}
-            onValueChange={value => this.setState({ slider_value : value })}
-            minimumValue = {1}
-            maximumValue = {20}
-            step = {1}
-            thumbTouchSize={{width: 100 , height: 100}}
-          />
-          <Text>
-          Time: {this.state.slider_value}
-          </Text>
-        </View>
-
       </View>
     )
   }
@@ -143,15 +138,6 @@ const styles = StyleSheet.create({
     height: 350,
     borderRadius: 350 / 2,
     backgroundColor: 'red'
-  },
-  slider: {
-    flex: 1,
-    marginLeft: 10,
-    marginRight: 10,
-    alignItems: "stretch",
-    width: 350,
-    justifyContent: "center",
-    // backgroundColor: '#ecf0f1'
   },
   button_container: {
     flex: 1,

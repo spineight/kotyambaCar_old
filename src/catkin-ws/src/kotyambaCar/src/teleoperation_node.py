@@ -30,7 +30,7 @@ class Teleoperation_node:
         # Left/Right Axis stick right (data.axes[2])
         twist.angular.z = data.axes[2]
         
-        stop_button = buttons[0]
+        stop_button = data.buttons[0]
         if stop_button == 1:
             twist.linear.x = 0
             twist.angular.z = 0
