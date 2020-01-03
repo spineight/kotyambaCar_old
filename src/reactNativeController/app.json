@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "kotyamba_joystick",
+    "name": "kotyambaCar",
     "slug": "reactNativeController",
     "privacy": "public",
-    "sdkVersion": "36.0.0",
+    "sdkVersion": "35.0.0",
     "platforms": [
       "ios",
       "android",
