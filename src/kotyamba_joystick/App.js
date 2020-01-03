@@ -29,8 +29,8 @@ export default class App extends Component {
     let xOffset = event.nativeEvent.locationX - this.state.circleCenterX;
     // use "-" to reverse Y axis
     let yOffset = -(event.nativeEvent.locationY - this.state.circleCenterY);
-    x_normalized = xOffset / (this.state.ViewWidth * 2.)
-    y_normalized = yOffset / (this.state.ViewHeight * 2.)
+    x_normalized = xOffset / (this.state.ViewWidth / 2.)
+    y_normalized = yOffset / (this.state.ViewHeight / 2.)
     const msg_to_send = `control_command ${x_normalized} ${y_normalized}`
     console.log(msg_to_send);
     console.log(event.nativeEvent)
@@ -38,6 +38,7 @@ export default class App extends Component {
       this.socket.send(msg_to_send);
   }
   onCircleRelease(event) {
+    console.log("release")
     const msg_to_send = `control_command 0 0`
     console.log(msg_to_send);
     console.log(event.nativeEvent)
@@ -83,7 +84,7 @@ export default class App extends Component {
         <View style = {styles.circleContainer}>
           <TouchableOpacity
             style={this.state.is_socket_open ? styles.circleEnabled : styles.circleDisabled}
-            onPress={(event) => this.onCirclePress(event)}
+            onPressIn={(event) => this.onCirclePress(event)}
             onLayout={(event) => this.onLayout(event)}
             onPressOut={(event) => this.onCircleRelease(event)}
           >
