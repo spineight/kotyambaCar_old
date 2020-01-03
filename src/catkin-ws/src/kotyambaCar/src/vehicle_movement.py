@@ -15,8 +15,8 @@ from geometry_msgs.msg import Twist
     
 class Vehicle_movement_node:
     def __init__(self):
-        SpeedControlMotor = Motor(7,8,1,100)
-        SteerControlMotor = Motor(10,9,11,2)
+        SpeedControlMotor = Motor(8,7,1,100)
+        SteerControlMotor = Motor(9,10,11,2)
         self.car = Vehicle(SpeedControlMotor, SteerControlMotor)
         self.car.start_engines()
         print "##ROS##\n. Starting movement_node. Subscribed to movement_command topic\n##ROS##"
@@ -32,21 +32,19 @@ class Vehicle_movement_node:
             Left/Right Axis stick right twist.angular.z
         '''
         msg = "twist cmd: twist.linear.x: {}, twist.angular.z: {}".format(twist.linear.x, twist.angular.z)
-
-        rospy.loginfo(twist)
-        print twist
+        # print "twist {}".format(twist)
+        # rospy.loginfo(twist)
+        # print twist
         # if(twist.linear.x == 0 and twist.angular.z == 0):
         #     self.car.on_stop()
-        speed_dc_step = 10
-        steering_dc_step = 5
-        if(twist.linear.x > 0):
-            self.car.on_speed_change(speed_dc_step)
+        if(twist.linear.x >= 0):
+            self.car.on_speed_change(twist.linear.x*100)
         elif(twist.linear.x < 0):
-            self.car.on_speed_change(-speed_dc_step)
-        elif(twist.angular.z < 0):
-            self.car.on_steering_change(-steering_dc_step)
-        elif(twist.angular.z > 0):
-            self.car.on_steering_change(steering_dc_step)
+            self.car.on_speed_change(twist.linear.x*100)
+        if(twist.angular.z < 0):
+            self.car.on_steering_change(twist.angular.z*50)
+        elif(twist.angular.z >= 0):
+            self.car.on_steering_change(twist.angular.z*50)
 
 if __name__ == '__main__':
     try:
