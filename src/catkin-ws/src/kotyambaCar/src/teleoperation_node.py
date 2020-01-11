@@ -14,7 +14,7 @@ class Teleoperation_node:
     def __init__(self):
         rospy.init_node('Joy2Kotyamba')
         # publishing to "turtle1/cmd_vel" to control turtle1
-        self.publisher = rospy.Publisher('kotyamba/cmd_vel', Twist)
+        self.publisher = rospy.Publisher('kotyamba/cmd_vel', Twist, queue_size = None)
         # subscribed to joystick inputs on topic "joy"
         rospy.Subscriber("joy", Joy, self.on_joy_data)
         print "init"

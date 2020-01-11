@@ -40,7 +40,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     print "initializing {}".format(self.__class__.__name__)
     # self.car = car
     self.driving_modes_manager = DrivingModesManager()
-    rospy.init_node('commands_listener_node')
+    rospy.init_node('web_server_node')
     self.twist_cmd_publisher = rospy.Publisher('kotyamba/cmd_vel', Twist)
     
   

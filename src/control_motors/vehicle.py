@@ -67,11 +67,11 @@ class Vehicle:
     self.speed_control_motor.stop()
     self.steering_control_motor.stop()
 
-  def stop(self):
-    ''' soft stop, wheels can move'''
-    self.speed_control_motor.stop()
-    self.steering_control_motor.stop()
-    self.stopAnotherCommands()
+  # def stop(self):
+  #   ''' soft stop, wheels can move'''
+  #   self.speed_control_motor.stop()
+  #   self.steering_control_motor.stop()
+  #   self.stopAnotherCommands()
 
   def hardBreak(self):
     ''' hard stop - wheels are blocked'''

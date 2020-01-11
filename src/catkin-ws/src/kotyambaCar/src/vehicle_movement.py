@@ -25,7 +25,7 @@ class Vehicle_movement_node:
     
         rospy.spin()
     def __del__(self):
-        self.car.stop()
+        self.car.stop_()
 
     def on_twist_command(self,twist):
         '''  Up/Down Axis stick left twist.linear.x
