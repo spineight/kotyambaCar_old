@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 import rospy
-from geometry_msgs.msg import Twist
+
+
+import std_msgs.msg
+# Twist message doesn't have time info, so I can't synch it with cam_img
+# introducing TwistStamped instead brings more overheads,
+# see this for details: https://answers.ros.org/question/29842/why-is-twist-message-without-timestamp/
+from geometry_msgs.msg import TwistStamped
+
+
 from sensor_msgs.msg import Joy
 
 # This ROS Node converts Joystick inputs from the joy node
@@ -22,13 +30,20 @@ class Teleoperation_node:
 
         rospy.spin()
     def on_joy_data(self, data):
-        twist = Twist()
+        twist = TwistStamped()
         # Up/Down Axis stick left (data.axes[1])
         twist.linear.x = data.axes[1]
         print "twist.linear.x {}".format(twist.linear.x)
         
         # Left/Right Axis stick right (data.axes[2])
         twist.angular.z = data.axes[2]
+        print "twist.angular.z {}".format(.angular.z)
+
+        h = std_msgs.msg.Header()
+        h.stamp = rospy.Time.now()
+        twist.header = h
+
+        print "twist.header: {}".format(twist.header)
         
         stop_button = data.buttons[0]
         if stop_button == 1:
