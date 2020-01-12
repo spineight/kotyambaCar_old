@@ -29,6 +29,6 @@
   <node name="joy_node" pkg="joy" type="joy_node" />
   <node name="teleoperation_node" pkg="kotyambaCar" type="teleoperation_node.py"  machine="raspberry_pi" />
   
-  <node name="vehicle_movement" pkg="kotyambaCar" type="vehicle_movement.py"  machine="raspberry_pi" />
+  <node name="vehicle_movement_node" pkg="kotyambaCar" type="vehicle_movement_node.py"  machine="raspberry_pi" />
   <!-- <include file="$(find kotyambaCar)/launch/video_server.launch" /> -->
 </launch>

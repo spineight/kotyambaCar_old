@@ -21,30 +21,30 @@ class Vehicle_movement_node:
         self.car.start_engines()
         print "##ROS##\n. Starting movement_node. Subscribed to movement_command topic\n##ROS##"
         rospy.init_node("Vehicle_movement_node") # removed ,anonymous=True to be able to kill it by name
-        rospy.Subscriber("kotyamba/cmd_vel", Twist, self.on_twist_command)
+        rospy.Subscriber("kotyamba/cmd_vel", TwistStamped, self.on_twist_command)
     
         rospy.spin()
     def __del__(self):
         self.car.stop_()
 
-    def on_twist_command(self,twist):
+    def on_twist_command(self,twist_stamped):
         '''  Up/Down Axis stick left twist.linear.x
             Left/Right Axis stick right twist.angular.z
         '''
-        msg = "twist cmd: twist.linear.x: {}, twist.angular.z: {}".format(twist.linear.x, twist.angular.z)
+        msg = "twist cmd: twist.linear.x: {}, twist.angular.z: {}".format(twist_stamped.twist.linear.x, twist_stamped.twist.angular.z)
         # print "twist {}".format(twist)
         # rospy.loginfo(twist)
         # print twist
         # if(twist.linear.x == 0 and twist.angular.z == 0):
         #     self.car.on_stop()
-        if(twist.linear.x >= 0):
-            self.car.on_speed_change(twist.linear.x*100)
-        elif(twist.linear.x < 0):
-            self.car.on_speed_change(twist.linear.x*100)
-        if(twist.angular.z < 0):
-            self.car.on_steering_change(twist.angular.z*50)
-        elif(twist.angular.z >= 0):
-            self.car.on_steering_change(twist.angular.z*50)
+        if(twist_stamped.twist.linear.x >= 0):
+            self.car.on_speed_change(twist_stamped.twist.linear.x*100)
+        elif(twist_stamped.twist.linear.x < 0):
+            self.car.on_speed_change(twist_stamped.twist.linear.x*100)
+        if(twist_stamped.twist.angular.z < 0):
+            self.car.on_steering_change(twist_stamped.twist.angular.z*50)
+        elif(twist_stamped.twist.angular.z >= 0):
+            self.car.on_steering_change(twist_stamped.twist.angular.z*50)
 
 if __name__ == '__main__':
     try:

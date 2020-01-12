@@ -22,7 +22,7 @@ class Teleoperation_node:
     def __init__(self):
         rospy.init_node('Joy2Kotyamba')
         # publishing to "turtle1/cmd_vel" to control turtle1
-        self.publisher = rospy.Publisher('kotyamba/cmd_vel', Twist, queue_size = None)
+        self.publisher = rospy.Publisher('kotyamba/cmd_vel', TwistStamped, queue_size = None)
         # subscribed to joystick inputs on topic "joy"
         rospy.Subscriber("joy", Joy, self.on_joy_data)
         print "init"
@@ -30,27 +30,27 @@ class Teleoperation_node:
 
         rospy.spin()
     def on_joy_data(self, data):
-        twist = TwistStamped()
+        twist_stamped = TwistStamped()
         # Up/Down Axis stick left (data.axes[1])
-        twist.linear.x = data.axes[1]
-        print "twist.linear.x {}".format(twist.linear.x)
+        twist_stamped.twist.linear.x = data.axes[1]
+        print "twist.linear.x {}".format(twist_stamped.twist.linear.x)
         
         # Left/Right Axis stick right (data.axes[2])
-        twist.angular.z = data.axes[2]
-        print "twist.angular.z {}".format(.angular.z)
+        twist_stamped.twist.angular.z = data.axes[2]
+        print "twist.angular.z {}".format(twist_stamped.twist.angular.z)
 
         h = std_msgs.msg.Header()
         h.stamp = rospy.Time.now()
-        twist.header = h
+        twist_stamped.header = h
 
-        print "twist.header: {}".format(twist.header)
+        print "twist.header: {}".format(twist_stamped.header)
         
         stop_button = data.buttons[0]
         if stop_button == 1:
-            twist.linear.x = 0
-            twist.angular.z = 0
+            twist_stamped.twist.linear.x = 0
+            twist_stamped.twist.angular.z = 0
 
-        self.publisher.publish(twist)
+        self.publisher.publish(twist_stamped)
 
 # rosrun turtlesim turtlesim_node
 if __name__ == '__main__':
