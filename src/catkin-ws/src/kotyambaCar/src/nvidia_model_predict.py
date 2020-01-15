@@ -59,3 +59,6 @@ cv2.waitKey(0)
 # running:
 # python predict.py --image images/cat.jpg --model output/simple_nn.model \
 #	--label-bin output/simple_nn_lb.pickle --width 32 --height 32 --flatten 1
+
+# python nvidia_model_predict.py -i ~/dataset/2020-01-12/1001_-0.9460_-0.0000.jpg 
+# -m throttle.model

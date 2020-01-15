@@ -25,7 +25,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", required=True,
 	help="path to input dataset of images")
 ap.add_argument("-m", "--model", required=True,
-	help="path to output trained model")
+	help="path to output trained model folder")
 # ap.add_argument("-l", "--label-bin", required=True,
 # 	help="path to output label binarizer")
 # ap.add_argument("-p", "--plot", required=True,
@@ -44,7 +44,8 @@ args = vars(ap.parse_args())
 # initialize the data and labels
 print("[INFO] loading images...")
 data = []
-labels = []
+labelsSteering = []
+labelsThrottle = []
 
 # grab the image paths and randomly shuffle them
 imagePaths = sorted(list(paths.list_images(args["dataset"])))
@@ -70,17 +71,22 @@ for imagePath in imagePaths:
     print label[:-4].split('_')
     frame_num,linear_velocity, angular_velocity = label[:-4].split('_')
     print "angular_velocity{}".format(angular_velocity)
-    labels.append(float(angular_velocity))
+    labelsSteering.append(float(angular_velocity))
+    labelsThrottle.append(float(linear_velocity))
 
 # scale the raw pixel intensities to the range [0, 1]
 data = np.array(data, dtype="float") / 255.0
-labels = np.array(labels)
+labelsSteering = np.array(labelsSteering)
+labelsThrottle = np.array(labelsThrottle)
 print "loaded {} frames".format(len(data))
 
 # partition the data into training and testing splits using 75% of
 # the data for training and the remaining 25% for testing
-(trainX, testX, trainY, testY) = train_test_split(data,
-	labels, test_size=0.25, random_state=42)
+(trainX_steering, testX_steering, trainY_steering, testY_steering) = train_test_split(data,
+	labelsSteering, test_size=0.25, random_state=42)
+
+(trainX_throttle, testX_throttle, trainY_throttle, testY_throttle) = train_test_split(data,
+	labelsThrottle, test_size=0.25, random_state=42)
 
 # convert the labels from integers to vectors (for 2-class, binary
 # classification you should use Keras' to_categorical function
@@ -102,8 +108,8 @@ print "loaded {} frames".format(len(data))
 # 	horizontal_flip=True, fill_mode="nearest")
 
 # initialize our VGG-like Convolutional Neural Network
-nvidia_net = NVIDIA_model.build(width=NVIDIA_W, height=NVIDIA_H, depth=3)
-
+nvidia_net_steering = NVIDIA_model.build(width=NVIDIA_W, height=NVIDIA_H, depth=3)
+nvidia_net_throttle = NVIDIA_model.build(width=NVIDIA_W, height=NVIDIA_H, depth=3)
 # initialize our initial learning rate, # of epochs to train for,
 # and batch size
 INIT_LR = 0.01
@@ -112,12 +118,13 @@ BS = 32
 
 # initialize the model and optimizer (you will want to use
 # binary_crossentropy for 2-class classification)
-print("[INFO] training network...")
+print("[INFO] training networks...")
 # opt = SGD(lr=INIT_LR, decay=INIT_LR / EPOCHS)
 # model.compile(loss="categorical_crossentropy", optimizer=opt,
 # 	metrics=["accuracy"])
 
-nvidia_net.compile(optimizer='adam', loss='mse')
+nvidia_net_steering.compile(optimizer='adam', loss='mse')
+nvidia_net_throttle.compile(optimizer='adam', loss='mse')
 
 # train the network
 # Since we are performing data augmentation, we call model.fit_generator  
@@ -129,13 +136,14 @@ nvidia_net.compile(optimizer='adam', loss='mse')
 # H = model.fit_generator(aug.flow(trainX, trainY, batch_size=BS),
 # 	validation_data=(testX, testY), steps_per_epoch=len(trainX) // BS,
 # 	epochs=EPOCHS)
-H = nvidia_net.fit(trainX, trainY, epochs=50, batch_size=128,
+H_steering = nvidia_net_steering.fit(trainX_steering, trainY_steering, epochs=50, batch_size=128,
+    verbose=1)
+H_throttle = nvidia_net_throttle.fit(trainX_throttle, trainY_throttle, epochs=50, batch_size=128,
     verbose=1)
 
-
 # evaluate the network
-print("[INFO] evaluating network...")
-predictions = nvidia_net.predict(testX, batch_size=32)
+# print("[INFO] evaluating network...")
+# predictions = nvidia_net.predict(testX, batch_size=32)
 # print(classification_report(testY.argmax(axis=1),
 # 	predictions.argmax(axis=1), target_names=lb.classes_))
 
@@ -154,8 +162,9 @@ predictions = nvidia_net.predict(testX, batch_size=32)
 # plt.savefig(args["plot"])
 
 # # save the model and label binarizer to disk
-print("[INFO] serializing network...")
-nvidia_net.save(args["model"])
+print("[INFO] serializing networks...")
+nvidia_net_steering.save(args["model"]+"steering.model")
+nvidia_net_throttle.save(args["model"]+"throttle.model")
 # f = open(args["label_bin"], "wb")
 # f.write(pickle.dumps(lb))
 # f.close()
@@ -163,3 +172,5 @@ nvidia_net.save(args["model"])
 # apply trained model:
 # python predict.py --image images/panda.jpg --model output/smallvggnet.model \
 #	--label-bin output/smallvggnet_lb.pickle --width 64 --height 64
+
+# train:

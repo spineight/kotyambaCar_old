@@ -11,66 +11,63 @@ import math
 
 import numpy as np
 
+from model_config import *
+
+import tensorflow as tf
+
+models_folder_path = "/home/oleg/dev/kotyambaCar/src/catkin-ws/src/kotyambaCar/src/"
+
+# https://github.com/keras-team/keras/issues/2397
+
+
 
 class SelfDriving:
     def __init__(self):
         rospy.init_node("self_driving_node") # removed ,anonymous=True to be able to kill it by name
         self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber("/usb_cam/image_raw",Image,self.on_image)
+        
+        self.steering_model = tf.compat.v1.keras.models.load_model(models_folder_path + "steering.model")
+        self.steering_model._make_predict_function()
+
+        self.throttle_model = tf.compat.v1.keras.models.load_model(models_folder_path + "throttle.model")
+        self.throttle_model._make_predict_function()
+        
         rospy.spin()
 
     def on_image(self,image):
         try:
             cv_image = self.bridge.imgmsg_to_cv2(image, "bgr8")
+            output = cv_image.copy()
+            image = cv2.resize(cv_image, (NVIDIA_W, NVIDIA_H))
+
+            # scale the pixel values to [0, 1]
+            image = image.astype("float") / 255.0
+
+            # we with a CNN add the batch dimension
+            image = image.reshape((1, image.shape[0], image.shape[1],
+                image.shape[2]))
+
+            steering_predicted = self.steering_model.predict(image)
+            throttle_predicted = self.throttle_model.predict(image)
+
+            # draw the class label + probability on the output image
+            steering_text = "steering:{:.2f}".format(float(steering_predicted))
+            throttle_text = "throttle:{:.2f}".format(float(throttle_predicted))
+            cv2.putText(output, steering_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+	            (0, 255, 255), 2)
+            cv2.putText(output, throttle_text, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+	            (0, 255, 255), 2)
+
+            # show the output image
+            cv2.imshow("Image", output)
+            cv2.waitKey(0)
         except CvBridgeError as e:
             print(e)
-
-        print "image rows:{} cols:{} channels:{}".format(cv_image.shape[0], cv_image.shape[1], cv_image.shape[2])
         
-        color_image = cv_image
-        cv2.imshow("Image. bgr8", color_image)
-
-        edges_img = get_edges_img(color_image)
-        cv2.imshow("Image edges", edges_img)
-
-        lines = get_lines(edges_img)
-        if lines is None:
-            print "NO LINES FOUND"
-        else:
-            detected_lines_img = edges_img.copy()
-            print "n of lines found: {}".format(len(lines))
-
-            for line in lines:
-                line_color = [255,255,255] #BGR
-                show_line_verbose(detected_lines_img, line, line_color)
-            candidate_lines = get_candidate_lines(lines)
-            cv2.imshow("Detected lines",detected_lines_img)
-
-            print "n of candidate lines: {}".format(len(candidate_lines))
-            for line in candidate_lines:
-                show_line_verbose(color_image, line, [0,255,0])
-            cv2.imshow("Image with lines", color_image)     
-            cv2.waitKey(3)
-
-        # https://www.colorspire.com/rgb-color-wheel/
-        ego_lanes_color = [0,145,255]
-        left_lane, right_lane = get_ego_lane_boundaries(candidate_lines, cv_image.shape[0])
-        if left_lane is not None:
-            print left_lane
-            show_line_verbose(color_image, left_lane, ego_lanes_color)
-        if right_lane is not None:
-            print right_lane
-            show_line_verbose(color_image, right_lane, ego_lanes_color)
-        cv2.imshow("Ego lane boundaries", color_image)   
-
-    # try:
-    #   self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
-    # except CvBridgeError as e:
-    #   print(e)
 
 if __name__ == '__main__':
     try:
-        slf = Simple_lane_finder()
     except rospy.ROSInterruptException:
-        print "Simple_lane_finder listener was interrupted"
+        print "self_driving_node was interrupted"
         cv2.destroyAllWindows()
